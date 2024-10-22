@@ -1,5 +1,5 @@
 import { BeatmapDecoder } from "osu-parsers";
-import osumap from ""
+import osuMap from './resources/osu/Tan Bionica - Ciudad Magica/map.osu'
 
 const path = 'resources/osu/Tan Bionica - Ciudad Magica/map.osu';
 
