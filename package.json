@@ -1,9 +1,10 @@
 {
   "name": "rythm",
+  "private": true,
   "version": "1.0.0",
-  "main": "index.js",
   "scripts": {
-    "start": "node index.html",
+    "start": "",
+	"build": "webpack",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -12,5 +13,9 @@
   "description": "",
   "dependencies": {
     "osu-parsers": "^4.1.7"
+  },
+  "devDependencies": {
+    "webpack": "^5.95.0",
+    "webpack-cli": "^5.1.4"
   }
 }
