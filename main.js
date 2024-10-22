@@ -1,6 +1,7 @@
 import { BeatmapDecoder } from "osu-parsers";
+import osumap from ""
 
-const path = '../resources/osu/Tan Bionica - Ciudad Magica/map.osu';
+const path = 'resources/osu/Tan Bionica - Ciudad Magica/map.osu';
 
 // This is optional and true by default.
 const shouldParseSb = true;
