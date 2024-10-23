@@ -15,7 +15,7 @@ const context = canvas.getContext('2d');
 const map = await new BeatmapDecoder().decodeFromString(osuMap);
 const hits = map.hitObjects.sort((left, right) => left - right);
 
-setInterval(function () {
+function draw() {
 	const time = Math.round(audio.currentTime * 1000);
 	const nextHits = hits.filter((hit) => hit.startTime > time);
 
@@ -26,8 +26,8 @@ setInterval(function () {
 		context.lineTo(200, hit.startTime - time);
 		context.stroke();
 	});
-}, 1);
 
-requestAnimationFrame(() => {
-	// TODO
-});
+	requestAnimationFrame(draw);
+}
+
+requestAnimationFrame(draw);
