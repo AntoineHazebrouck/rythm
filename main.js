@@ -1,12 +1,23 @@
 import { BeatmapDecoder } from 'osu-parsers';
 import osuMap from './resources/osu/Tan Bionica - Ciudad Magica/map.osu';
+import osuAudio from './resources/osu/Tan Bionica - Ciudad Magica/audio.ogg';
 
-// const path = 'resources/osu/Tan Bionica - Ciudad Magica/map.osu';
+const audio = new Audio(osuAudio);
+const playButton = document.querySelector('.song');
 
-console.log(osuMap);
+playButton.addEventListener('click', function () {
+	audio.play();
+	alert('click');
+});
+// button.onclick = function() {
+// 	audio.play();
+// };
 
 const decoder = new BeatmapDecoder();
-const beatmap1 = await decoder.decodeFromString(osuMap);
+const map = await decoder.decodeFromString(osuMap);
 
-console.log(beatmap1); // Beatmap object.
-// console.log(osuMap); // Beatmap object.
+console.log(map);
+console.log(osuAudio);
+
+const bpm = map.bpm;
+const hits = map.hitObjects;

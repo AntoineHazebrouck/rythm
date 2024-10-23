@@ -13,6 +13,10 @@ module.exports = {
 				test: /\.osu/,
 				type: 'asset/source',
 			},
+			{
+				test: /\.ogg/,
+				type: 'asset/resource',
+			},
 		],
 	},
 };
