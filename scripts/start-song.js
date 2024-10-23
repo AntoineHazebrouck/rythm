@@ -1,5 +1,5 @@
 import audio from './audio';
 
-export default function () {
+export default function startSong() {
 	audio.play();
 }
