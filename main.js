@@ -5,29 +5,51 @@ import startSong from './scripts/start-song';
 
 document.querySelector('.start-song').addEventListener('click', startSong);
 document.querySelector('.event').addEventListener('click', () => {
-	console.log(Math.round(audio.currentTime * 1000));
-	console.log(hits[0].startTime);
+	console.log(time());
+	console.log(nextHits());
 });
+
+document.addEventListener('keydown', function (event) {
+	if (event.key == 'z') {
+		const nextClosestHit = nextHits()[0];
+
+		const rating = nextClosestHit.hitWindows.resultFor(
+			nextClosestHit.startTime - time()
+		);
+		noteRating.innerText = rating;
+		console.log(rating);
+	}
+});
+
+const noteRating = document.querySelector('h1');
 
 const canvas = document.querySelector('canvas');
 const context = canvas.getContext('2d');
 
-const map = await new BeatmapDecoder().decodeFromString(osuMap);
-const hits = map.hitObjects.sort((left, right) => left - right);
+const hits = await new BeatmapDecoder()
+	.decodeFromString(osuMap)
+	.hitObjects.sort((left, right) => left - right);
 
-function draw() {
-	const time = Math.round(audio.currentTime * 1000);
-	const nextHits = hits.filter((hit) => hit.startTime > time);
-
-	context.clearRect(0, 0, canvas.width, canvas.height);
-	nextHits.forEach((hit) => {
-		context.beginPath();
-		context.moveTo(0, hit.startTime - time);
-		context.lineTo(200, hit.startTime - time);
-		context.stroke();
-	});
-
-	requestAnimationFrame(draw);
+function time() {
+	return Math.round(audio.currentTime * 1000);
 }
 
-requestAnimationFrame(draw);
+function nextHits() {
+	return hits.filter((hit) => hit.startTime > time());
+}
+
+function draw() {
+	context.clearRect(0, 0, canvas.width, canvas.height);
+	nextHits().forEach((hit) => {
+		context.beginPath();
+		context.moveTo(0, hit.startTime - time());
+		context.lineTo(200, hit.startTime - time());
+		context.stroke();
+	});
+}
+
+function refresh() {
+	draw();
+	requestAnimationFrame(refresh);
+}
+requestAnimationFrame(refresh);
