@@ -11,7 +11,7 @@ module.exports = {
 		rules: [
 			{
 				test: /\.osu/,
-				type: 'asset/resource',
+				type: 'asset/source',
 			},
 		],
 	},
