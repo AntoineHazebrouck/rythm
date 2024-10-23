@@ -3,16 +3,18 @@
   "private": true,
   "version": "1.0.0",
   "scripts": {
-	"build": "webpack",
-	"start": "npx -y http-server",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "webpack",
+    "start": "npx -y http-server",
+    "test": "echo \"Error: no test specified\" && exit 1",
+	"watch": "watch \"npm run build && npm run start\" ."
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "osu-parsers": "^4.1.7"
+    "osu-parsers": "^4.1.7",
+    "watch": "^1.0.2"
   },
   "devDependencies": {
     "webpack": "^5.95.0",
