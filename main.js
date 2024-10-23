@@ -3,15 +3,12 @@ import osuMap from './resources/osu/Tan Bionica - Ciudad Magica/map.osu';
 import osuAudio from './resources/osu/Tan Bionica - Ciudad Magica/audio.ogg';
 
 const audio = new Audio(osuAudio);
-const playButton = document.querySelector('.song');
+const playButton = document.querySelector('button');
 
 playButton.addEventListener('click', function () {
 	audio.play();
 	alert('click');
 });
-// button.onclick = function() {
-// 	audio.play();
-// };
 
 const decoder = new BeatmapDecoder();
 const map = await decoder.decodeFromString(osuMap);
