@@ -16,20 +16,18 @@ const map = await new BeatmapDecoder().decodeFromString(osuMap);
 const hits = map.hitObjects.sort((left, right) => left - right);
 
 setInterval(function () {
-	const current = Math.round(audio.currentTime * 1000);
-	const next = hits.find((hit) => hit.startTime > current);
+	const time = Math.round(audio.currentTime * 1000);
+	const nextHits = hits.filter((hit) => hit.startTime > time);
 
 	context.clearRect(0, 0, canvas.width, canvas.height);
-	context.beginPath();
-	context.moveTo(0, next.startTime - current);
-	context.lineTo(200, next.startTime - current);
-	context.stroke();
-
-	// setTimeout(() => {
-	// }, 1000)
+	nextHits.forEach((hit) => {
+		context.beginPath();
+		context.moveTo(0, hit.startTime - time);
+		context.lineTo(200, hit.startTime - time);
+		context.stroke();
+	});
 }, 1);
 
-
 requestAnimationFrame(() => {
-
-})
+	// TODO
+});
