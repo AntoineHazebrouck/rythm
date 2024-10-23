@@ -11,10 +11,16 @@ document.querySelector('.event').addEventListener('click', () => {
 
 document.addEventListener('keydown', function (event) {
 	if (event.key == 'z') {
-		const nextClosestHit = nextHits()[0];
+		const closestHits = hits.sort(
+			(left, right) =>
+				Math.abs(left.startTime - time()) -
+				Math.abs(right.startTime - time())
+		);
 
-		const rating = nextClosestHit.hitWindows.resultFor(
-			nextClosestHit.startTime - time()
+		const closestHit = closestHits[0];
+
+		const rating = closestHit.hitWindows.resultFor(
+			closestHit.startTime - time()
 		);
 		noteRating.innerText = rating;
 		console.log(rating);
