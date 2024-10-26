@@ -1,0 +1,19 @@
+{
+  "name": "javascript",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "rollup --config",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@rollup/plugin-node-resolve": "^15.3.0",
+    "parcel": "^2.12.0"
+  },
+  "dependencies": {
+    "osu-parsers": "^4.1.7"
+  }
+}
