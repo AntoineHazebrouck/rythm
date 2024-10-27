@@ -1,3 +1,6 @@
 const osuAudio = await fetch("/audio")
 
-export default new Audio(osuAudio);
+console.log(osuAudio);
+
+
+export default new Audio("/audio");

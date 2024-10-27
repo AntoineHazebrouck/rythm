@@ -13,8 +13,6 @@ import org.springframework.util.MimeType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import lt.ekgame.beatmap_analyzer.parser.BeatmapException;
-
 @RestController
 public class FileController {
 	private final ZipFile zip;
@@ -33,11 +31,11 @@ public class FileController {
 	}
 
 	@GetMapping(path = "/beatmap")
-	public ResponseEntity<InputStreamResource> beatmap() throws IOException, BeatmapException {
+	public ResponseEntity<String> beatmap() throws IOException {
 		InputStream stream = zip.getInputStream(zip.getEntry("Tan Bionica - Ciudad Magica (Midnaait) [Facil].osu"));
 
 		return ResponseEntity.ok()
-				.contentType(MediaType.asMediaType(MimeType.valueOf("tx-osu-beatmap")))
-				.body(new InputStreamResource(stream));
+				.contentType(MediaType.TEXT_PLAIN)
+				.body(new String(stream.readAllBytes()));
 	}
 }
