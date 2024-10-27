@@ -5,11 +5,23 @@ const canvas = document.querySelector('canvas');
 const context = canvas.getContext('2d');
 
 function draw() {
+	const laneWidth = 200;
+
 	context.clearRect(0, 0, canvas.width, canvas.height);
+
+	context.beginPath();
+	context.moveTo(0, 0);
+	context.lineTo(laneWidth, 0);
+	context.stroke();
+
 	nextHits().forEach((hit) => {
 		context.beginPath();
-		context.moveTo(0, hit.startTime - time());
-		context.lineTo(200, hit.startTime - time());
+
+		const spacingRatio = 2
+		const y = (hit.startTime - time()) / spacingRatio
+
+		context.moveTo(0, y);
+		context.lineTo(laneWidth, y);
 		context.stroke();
 	});
 }
