@@ -1,7 +1,10 @@
 import time from './time.js';
 import { BeatmapDecoder } from 'osu-parsers';
 
-const osuMap = await fetch("/beatmap").then(data => data.text())
+const search = window.location.search;
+const urlParams = new URLSearchParams(search);
+
+const osuMap = await fetch(urlParams.get('beatmap-url')).then(data => data.text())
 
 const hits = await new BeatmapDecoder()
 	.decodeFromString(osuMap)

@@ -35,7 +35,10 @@ public class CurrentOsuArchiveService {
 		Set<String> names = new HashSet<>();
 		Iterator<? extends ZipEntry> iterator = zip.entries().asIterator();
 		while (iterator.hasNext()) {
-			names.add(iterator.next().getName());
+			var name = iterator.next().getName();
+			if (name.endsWith(".osu")) {
+				names.add(name);
+			}
 		}
 		return names;
 	}

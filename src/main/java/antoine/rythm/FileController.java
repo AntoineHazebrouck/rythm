@@ -2,7 +2,7 @@ package antoine.rythm;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.Set;
+import java.util.Base64;
 import java.util.zip.ZipException;
 
 import org.springframework.core.io.ByteArrayResource;
@@ -41,20 +41,16 @@ public class FileController {
 				.body(new ByteArrayResource(audio.getData()));
 	}
 
-	// @GetMapping(path = "/beatmaps/names")
-	// public ResponseEntity<Set<String>> beatmapsNames() throws IOException {
-	// 	return ResponseEntity.ok()
-	// 			.contentType(MediaType.APPLICATION_JSON)
-	// 			.body(currentOsuArchiveService.extractBeatmapsNames());
-	// }
-
 	@GetMapping(path = "/beatmap")
 	public ResponseEntity<String> beatmap(
-			@RequestParam("name") String name) throws IOException {
+			@RequestParam("encoded-beatmap-name") String encodedName) throws IOException {
+
+		byte[] decodedBytes = Base64.getDecoder().decode(encodedName);
+		String decoded = new String(decodedBytes);
 
 		return ResponseEntity.ok()
 				.contentType(MediaType.TEXT_PLAIN)
-				.body(currentOsuArchiveService.extractBeatmapContent(name));
+				.body(currentOsuArchiveService.extractBeatmapContent(decoded));
 	}
 
 }

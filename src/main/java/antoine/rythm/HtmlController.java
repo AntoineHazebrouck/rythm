@@ -1,6 +1,7 @@
 package antoine.rythm;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.Base64;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,8 +22,8 @@ public class HtmlController {
 	}
 
 	@GetMapping("/setup")
-	public String setup(@Autowired Model model) {
-		model.addAttribute("beatmaps-names", currentOsuArchiveService.extractBeatmapsNames());
+	public String setup(Model model) {
+		model.addAttribute("beatmapsNames", currentOsuArchiveService.extractBeatmapsNames());
 		return "setup";
 	}
 
@@ -32,9 +33,13 @@ public class HtmlController {
 	}
 
 	@PostMapping("/setup-game")
-	public RedirectView postMethodName(@RequestParam("note-spacing") int noteSpacing) {
-		return new RedirectView("/game");
+	public RedirectView postMethodName(
+			@RequestParam("beatmap-name") String beatmapName,
+			@RequestParam("note-spacing") int noteSpacing) {
+		String asBase64 = Base64.getEncoder().encodeToString(beatmapName.getBytes());
+
+		String beatmapUrl = "/beatmap?encoded-beatmap-name=" + asBase64;
+		return new RedirectView("/game?beatmap-url=" + beatmapUrl);
 	}
-	
 
 }
