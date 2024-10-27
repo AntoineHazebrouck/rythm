@@ -26,9 +26,8 @@ import org.springframework.web.servlet.view.RedirectView;
 public class FileController {
 	private ZipFile zip;
 
-	@PostMapping(path = "/setup-game")
+	@PostMapping(path = "/load-osu-archive")
 	public RedirectView setupGame(
-			@RequestParam("note-spacing") int noteSpacing,
 			@RequestParam("osu-archive") MultipartFile osuArchive)
 			throws ZipException, IOException, IllegalStateException, URISyntaxException {
 		File temp = File.createTempFile("temp", ".osz");
@@ -36,7 +35,7 @@ public class FileController {
 
 		this.zip = new ZipFile(temp);
 
-		return new RedirectView("/index");
+		return new RedirectView("/setup");
 	}
 
 	@GetMapping(path = "/audio")
@@ -71,7 +70,7 @@ public class FileController {
 			public int compare(ZipEntry left, ZipEntry right) {
 				return Long.compare(right.getSize(), left.getSize());
 			}
-			
+
 		}).findFirst().get();
 	}
 }
