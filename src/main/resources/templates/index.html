@@ -8,9 +8,13 @@
 	<script src='javascript/bundle.js' type="module" defer></script>
 </head>
 <body>
-	<!-- <audio controls src="/audio"></audio> -->
-
 	<main>
+		<form action="/setup-game" method="post" enctype="multipart/form-data">
+			<input name="osu-archive" type="file" accept=".osz" />
+			<input name="note-spacing" type="number" value="2">
+			<button type="submit">Start game</button>
+		</form>
+
 		<button class="start-song">Music</button>
 		<button class="event">Event</button>
 
