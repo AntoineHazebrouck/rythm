@@ -4,6 +4,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
@@ -37,9 +41,12 @@ public class FileController {
 
 	@GetMapping(path = "/audio")
 	public ResponseEntity<ByteArrayResource> audio() throws IOException {
-		InputStream stream = zip.getInputStream(zip.getEntry("audio.ogg"));
+		ZipEntry audio = getLargestEntry(zip);
+		InputStream stream = zip.getInputStream(audio);
+		String[] split = audio.getName().split("\\.");
+		String format = split[split.length - 1];
 		return ResponseEntity.ok()
-				.contentType(MediaType.asMediaType(MimeType.valueOf("audio/ogg")))
+				.contentType(MediaType.asMediaType(MimeType.valueOf("audio/" + format)))
 				.body(new ByteArrayResource(stream.readAllBytes()));
 	}
 
@@ -52,4 +59,19 @@ public class FileController {
 				.body(new String(stream.readAllBytes()));
 	}
 
+	private static ZipEntry getLargestEntry(ZipFile zip) {
+		Set<ZipEntry> entries = new HashSet<>();
+		zip.entries().asIterator().forEachRemaining(entry -> {
+			entries.add(entry);
+		});
+
+		return entries.stream().sorted(new Comparator<ZipEntry>() {
+
+			@Override
+			public int compare(ZipEntry left, ZipEntry right) {
+				return Long.compare(right.getSize(), left.getSize());
+			}
+			
+		}).findFirst().get();
+	}
 }
