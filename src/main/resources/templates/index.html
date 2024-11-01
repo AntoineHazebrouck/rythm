@@ -1,15 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 
-<head>
-	<meta charset='utf-8'>
-	<meta http-equiv='X-UA-Compatible' content='IE=edge'>
-	<title>Home</title>
-	<meta name='viewport' content='width=device-width, initial-scale=1'>
-	<!-- <script src='javascript/bundle.js' type="module" defer></script> -->
-</head>
+<head th:replace="~{../fragments/general.html :: head}"></head>
 
 <body>
+	<header th:replace="~{../fragments/general.html :: header}"> </header>
 	<main>
 		<h1>Select an osu archive</h1>
 		<form action="/load-osu-archive" method="post" enctype="multipart/form-data">

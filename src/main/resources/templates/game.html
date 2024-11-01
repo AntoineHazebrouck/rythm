@@ -1,15 +1,11 @@
 <!DOCTYPE html>
 <html>
 
-<head>
-	<meta charset='utf-8'>
-	<meta http-equiv='X-UA-Compatible' content='IE=edge'>
-	<title>Home</title>
-	<meta name='viewport' content='width=device-width, initial-scale=1'>
-	<script src='javascript/bundle.js' type="module" defer></script>
-</head>
+<head th:insert="~{../fragments/general.html :: head}"></head>
+<script src='javascript/bundle.js' type="module" defer></script>
 
 <body>
+	<header th:replace="~{../fragments/general.html :: header}"> </header>
 	<main>
 		<button class="start-song">Music</button>
 		<button class="event">Event</button>
