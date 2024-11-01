@@ -1,6 +1,6 @@
 import { getParameter } from './parameters-handler.js';
 import time from './time.js';
-import { BeatmapDecoder } from 'osu-parsers';
+import { BeatmapDecoder, HoldableObject } from 'osu-parsers';
 
 const osuMap = await fetch(getParameter('beatmap-url')).then(data => data.text())
 
@@ -32,5 +32,11 @@ export function closestHit(columnId) {
 }
 
 export function nextHits() {
-	return hits.filter((hit) => hit.startTime > time());
+	return hits.filter((hit) => {
+		if (hit instanceof HoldableObject) {
+			return hit.endTime > time()
+		} else {
+			return hit.startTime > time()
+		}
+	});
 }
