@@ -3,9 +3,8 @@ import startSong from './start-song.js';
 import time from './time.js';
 
 export function addEventListeners() {
-	const noteRating = document.querySelector('h1');
+	const noteRating = document.querySelector('#note-rating');
 
-	document.querySelector('.start-song').addEventListener('click', startSong);
 	document.querySelector('.event').addEventListener('click', () => {
 		console.log(time());
 		console.log(nextHits());
@@ -23,10 +22,14 @@ export function addEventListeners() {
 		'e': () => getRating(2),
 		'r': () => getRating(3),
 		't': () => getRating(4),
+		' ': startSong,
 	}
 
 	document.addEventListener('keydown', function (event) {
+		event.preventDefault();
 		const rating = keyEvents[event.key]();
-		noteRating.innerText = rating;
+		if (rating) {
+			noteRating.innerText = rating;
+		}
 	});
 }
