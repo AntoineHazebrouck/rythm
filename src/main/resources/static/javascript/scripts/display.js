@@ -1,6 +1,7 @@
 import { nextHits } from "./hits.js";
 import time from './time.js';
 import { columns } from "./hits.js";
+import { getParameter } from "./parameters-handler.js";
 
 const canvas = document.querySelector('canvas');
 const context = canvas.getContext('2d');
@@ -18,7 +19,7 @@ function draw() {
 	nextHits().forEach((hit) => {
 		context.beginPath();
 
-		const spacingRatio = 2 // TODO use parameter
+		const spacingRatio = getParameter('note-spacing')
 		const y = (hit.startTime - time()) / spacingRatio
 
 		const laneX = laneWidth * columns.findIndex(x => x === hit.startX)

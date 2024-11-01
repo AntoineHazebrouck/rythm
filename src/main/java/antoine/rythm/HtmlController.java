@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.view.RedirectView;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import lombok.RequiredArgsConstructor;
 
@@ -39,7 +40,14 @@ public class HtmlController {
 		String asBase64 = Base64.getEncoder().encodeToString(beatmapName.getBytes());
 
 		String beatmapUrl = "/beatmap?encoded-beatmap-name=" + asBase64;
-		return new RedirectView("/game?beatmap-url=" + beatmapUrl);
+
+		String redirect = UriComponentsBuilder.newInstance()
+				.path("/game")
+				.queryParam("beatmap-url", beatmapUrl)
+				.queryParam("note-spacing", Integer.toString(noteSpacing))
+				.toUriString();
+
+		return new RedirectView(redirect);
 	}
 
 }

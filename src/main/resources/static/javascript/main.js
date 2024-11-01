@@ -23,3 +23,5 @@ document.addEventListener('keydown', function (event) {
 });
 
 startDisplaying();
+
+console.log();
