@@ -6,9 +6,20 @@ const urlParams = new URLSearchParams(search);
 
 const osuMap = await fetch(urlParams.get('beatmap-url')).then(data => data.text())
 
-const hits = await new BeatmapDecoder()
+const parsed = await new BeatmapDecoder()
 	.decodeFromString(osuMap)
+
+console.log(parsed);
+
+
+const hits = parsed
 	.hitObjects.sort((left, right) => left - right);
+
+
+export const columns = Array.from(new Set(hits.map(hit => hit.startX))).sort((left, right) => left - right);
+
+console.log(columns);
+
 
 export function closestHit() {
 	const closestHits = hits.sort(

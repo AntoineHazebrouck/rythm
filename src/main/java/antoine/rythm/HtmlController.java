@@ -16,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 public class HtmlController {
 	private final CurrentOsuArchiveService currentOsuArchiveService;
 
-	@GetMapping("/index")
+	@GetMapping
 	public String index() {
 		return "index";
 	}
