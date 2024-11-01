@@ -4,7 +4,7 @@ import { BeatmapDecoder } from 'osu-parsers';
 
 const osuMap = await fetch(getParameter('beatmap-url')).then(data => data.text())
 
-const parsed = await new BeatmapDecoder()
+const parsed = new BeatmapDecoder()
 	.decodeFromString(osuMap)
 
 console.log(parsed);
@@ -19,12 +19,14 @@ export const columns = Array.from(new Set(hits.map(hit => hit.startX))).sort((le
 console.log(columns);
 
 
-export function closestHit() {
-	const closestHits = hits.sort(
-		(left, right) =>
-			Math.abs(left.startTime - time()) -
-			Math.abs(right.startTime - time())
-	);
+export function closestHit(columnId) {
+	const closestHits = hits
+		.filter(hit => hit.startX === columns[columnId])
+		.sort(
+			(left, right) =>
+				Math.abs(left.startTime - time()) -
+				Math.abs(right.startTime - time())
+		);
 
 	return closestHits[0];
 }
