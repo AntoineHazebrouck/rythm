@@ -7,6 +7,9 @@ const canvas = document.querySelector('canvas');
 const context = canvas.getContext('2d');
 
 function draw() {
+	canvas.width = screen.width / 2;
+	canvas.height = screen.height;
+
 	const laneWidth = canvas.width / columns.length;
 
 	context.clearRect(0, 0, canvas.width, canvas.height);
