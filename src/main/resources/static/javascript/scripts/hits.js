@@ -23,9 +23,13 @@ export function closestHit(columnId) {
 	const closestHits = hits
 		.filter(hit => hit.startX === columns[columnId])
 		.sort(
-			(left, right) =>
-				Math.abs(left.startTime - time()) -
-				Math.abs(right.startTime - time())
+			(left, right) => {
+
+				const leftOffset = (left instanceof HoldableObject ? left.endTime : left.startTime) - time();
+				const rightOffset = (right instanceof HoldableObject ? right.endTime : right.startTime) - time();
+
+				return Math.abs(leftOffset) - Math.abs(rightOffset);
+			}
 		);
 
 	return closestHits[0];
