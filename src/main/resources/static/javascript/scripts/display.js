@@ -12,37 +12,39 @@ function fitToScreen() {
 	canvas.height = screen.height;
 }
 
-function draw() {
-	fitToScreen();
-
-	const laneWidth = canvas.width / columns.length;
-
-	context.clearRect(0, 0, canvas.width, canvas.height);
-
+function drawNoteLimitLine() {
 	context.beginPath();
 	context.moveTo(0, 0);
 	context.lineTo(canvas.width, 0);
 	context.stroke();
+}
+
+function draw() {
+	fitToScreen();
+
+	context.clearRect(0, 0, canvas.width, canvas.height);
+
+	drawNoteLimitLine();
+
+
+
 
 	nextHits().forEach((hit) => {
+		const laneWidth = canvas.width / columns.length;
 
 		function getDisplayedY(actualY) {
 			const spacingRatio = getParameter('note-spacing');
 			return (actualY - time()) / spacingRatio;
 		}
 
-		if (hit instanceof HoldableObject) {
-			context.beginPath();
+		context.beginPath();
+		const laneX = laneWidth * columns.findIndex(x => x === hit.startX)
+		context.moveTo(laneX, getDisplayedY(hit.startTime));
 
-			const laneX = laneWidth * columns.findIndex(x => x === hit.startX)
-			context.moveTo(laneX, getDisplayedY(hit.startTime));
+		if (hit instanceof HoldableObject) {
 			context.rect(laneX, getDisplayedY(hit.startTime), laneWidth, getDisplayedY(hit.endTime) - getDisplayedY(hit.startTime));
 			context.fill();
 		} else {
-			context.beginPath();
-
-			const laneX = laneWidth * columns.findIndex(x => x === hit.startX)
-			context.moveTo(laneX, getDisplayedY(hit.startTime));
 			context.lineTo(laneX + laneWidth, getDisplayedY(hit.startTime));
 			context.stroke();
 		}
