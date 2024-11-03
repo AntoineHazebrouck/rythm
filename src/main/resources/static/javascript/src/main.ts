@@ -1,16 +1,5 @@
+import startDisplaying from './display';
+import { addEventListeners } from './inputs-handler';
 
-import { setupCounter } from './counter'
-
-document.querySelector<HTMLDivElement>('#note-rating')!.innerHTML = `
-
-    <h1>Vite + TypeScript</h1>
-    <div class="card">
-      <button id="counter" type="button"></button>
-    </div>
-    <p class="read-the-docs">
-      Click on the Vite and TypeScript logos to learn more
-    </p>
-  </div>
-`
-
-setupCounter(document.querySelector<HTMLButtonElement>('#counter')!)
+addEventListeners();
+startDisplaying();

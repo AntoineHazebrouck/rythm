@@ -4,8 +4,9 @@ import { columns } from "./hits.js";
 import { getParameter } from "./parameters-handler.js";
 import { HoldableObject } from "osu-parsers";
 
-const canvas = document.querySelector('canvas');
-const context = canvas.getContext('2d');
+
+const canvas: HTMLCanvasElement = document.querySelector('canvas')!;
+const context: CanvasRenderingContext2D = canvas.getContext('2d')!;
 
 function fitToScreen() {
 	canvas.width = screen.width / 2;
@@ -33,7 +34,7 @@ function draw() {
 		const laneWidth = canvas.width / columns.length;
 
 		function getDisplayedY(actualY) {
-			const spacingRatio = getParameter('note-spacing');
+			const spacingRatio = Number(getParameter('note-spacing'));
 			return (actualY - time()) / spacingRatio;
 		}
 

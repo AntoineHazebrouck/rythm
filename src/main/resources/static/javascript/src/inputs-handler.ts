@@ -5,9 +5,9 @@ import { startSong, time } from "./audio.js";
 import { store } from './store.js';
 
 export function addEventListeners() {
-	const noteRating = document.querySelector('#note-rating');
+	const noteRating = document.querySelector('#note-rating')!;
 
-	function getRating(columnId) {
+	function getRating(columnId): string {
 		const hit = closestHit(columnId);
 
 		const offset = hit.startTime - time();
@@ -45,7 +45,7 @@ export function addEventListeners() {
 		if (store.keyStates[event.key] === 'UP' || closestHit(keyToColumnMapping[event.key]) instanceof HoldableObject) {
 			const rating = keyEvents[event.key]();
 			if (rating) {
-				noteRating.innerText = rating;
+				noteRating.innerHTML = rating;
 			}
 			store.keyStates[event.key] = 'PRESSED'
 		}

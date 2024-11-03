@@ -2,7 +2,7 @@ import { getParameter } from './parameters-handler.js';
 import { time } from './audio.js';
 import { BeatmapDecoder, HoldableObject } from 'osu-parsers';
 
-const osuMap = await fetch(getParameter('beatmap-url')).then(data => data.text())
+const osuMap = await fetch(getParameter('beatmap-url')!).then(data => data.text()); // TODO remove !, add null checks
 
 const parsed = new BeatmapDecoder()
 	.decodeFromString(osuMap)
@@ -11,7 +11,7 @@ console.log(parsed);
 
 
 const hits = parsed
-	.hitObjects.sort((left, right) => left - right);
+	.hitObjects.sort((left, right) => left.startTime - right.startTime);
 
 
 export const columns = Array.from(new Set(hits.map(hit => hit.startX))).sort((left, right) => left - right);

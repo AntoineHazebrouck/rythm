@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "build": "tsc ./src/main.ts --target esnext --moduleResolution bundler --outDir dist && rollup --config"
+    "build": "tsc ./src/main.ts --target esnext --moduleResolution bundler --outDir dist --AllowJs --checkJs --module esnext && rollup --config"
   },
   "devDependencies": {
     "typescript": "^5.6.3",
