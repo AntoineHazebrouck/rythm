@@ -3,15 +3,11 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "build": "rollup --config",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc ./src/main.ts --target esnext --moduleResolution bundler && rollup --config"
   },
-  "author": "",
-  "license": "ISC",
-  "description": "",
   "devDependencies": {
-    "@rollup/plugin-node-resolve": "^15.3.0",
-    "parcel": "^2.12.0"
+    "typescript": "^5.6.3",
+	"@rollup/plugin-node-resolve": "^15.3.0"
   },
   "dependencies": {
     "osu-parsers": "^4.1.7"
