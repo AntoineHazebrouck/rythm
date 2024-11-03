@@ -1,5 +1,5 @@
 import { getParameter } from './parameters-handler.js';
-import time from './time.js';
+import { time } from './audio.js';
 import { BeatmapDecoder, HoldableObject } from 'osu-parsers';
 
 const osuMap = await fetch(getParameter('beatmap-url')).then(data => data.text())

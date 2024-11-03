@@ -1,5 +1,5 @@
 import { nextHits } from "./hits.js";
-import time from './time.js';
+import { time } from './audio.js';
 import { columns } from "./hits.js";
 import { getParameter } from "./parameters-handler.js";
 import { HoldableObject } from "osu-parsers";

@@ -1,9 +1,8 @@
 import { HoldableObject } from 'osu-parsers';
 import { getResultName } from './hit-windows.js';
 import { closestHit } from './hits.js';
-import startSong from './start-song.js';
+import { startSong, time } from "./audio.js";
 import { store } from './store.js';
-import time from './time.js';
 
 export function addEventListeners() {
 	const noteRating = document.querySelector('#note-rating');
