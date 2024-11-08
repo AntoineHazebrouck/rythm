@@ -1,14 +1,14 @@
 import { HoldableObject } from 'osu-parsers';
 import { getResultName } from './hit-windows.js';
-import { closestHit } from './hits.js';
 import { startSong, time } from "./audio.js";
 import { store } from './store.js';
+import { HitsHandler } from './hits-handler.js';
 
-export function addEventListeners() {
+export function addEventListeners(hitsHandler: HitsHandler) {
 	const noteRating = document.querySelector('#note-rating')!;
 
 	function getRating(columnId): string {
-		const hit = closestHit(columnId);
+		const hit = hitsHandler.closestHit(columnId);
 
 		const offset = hit.startTime - time();
 
@@ -42,7 +42,7 @@ export function addEventListeners() {
 	document.addEventListener('keydown', (event) => {
 		event.preventDefault();
 
-		if (store.keyStates[event.key] === 'UP' || closestHit(keyToColumnMapping[event.key]) instanceof HoldableObject) {
+		if (store.keyStates[event.key] === 'UP' || hitsHandler.closestHit(keyToColumnMapping[event.key]) instanceof HoldableObject) {
 			const rating = keyEvents[event.key]();
 			if (rating) {
 				noteRating.innerHTML = rating;
