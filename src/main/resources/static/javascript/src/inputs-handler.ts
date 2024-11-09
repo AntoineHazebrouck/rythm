@@ -9,20 +9,12 @@ export function addEventListeners(
 	canvasDisplayHandler: CanvasDisplayHandler,
 	htmlDisplayHandler: HtmlDisplayHandler
 ) {
-	const keyToColumnMapping = {
-		a: 0,
-		z: 1,
-		e: 2,
-		r: 3,
-		t: 4,
-	};
-
 	const keyEvents: Record<string, () => void> = {
-		a: () => htmlDisplayHandler.displayRating(keyToColumnMapping['a']),
-		z: () => htmlDisplayHandler.displayRating(keyToColumnMapping['z']),
-		e: () => htmlDisplayHandler.displayRating(keyToColumnMapping['e']),
-		r: () => htmlDisplayHandler.displayRating(keyToColumnMapping['r']),
-		t: () => htmlDisplayHandler.displayRating(keyToColumnMapping['t']),
+		a: () => htmlDisplayHandler.displayRating(store.keyToColumnMapping['a']),
+		z: () => htmlDisplayHandler.displayRating(store.keyToColumnMapping['z']),
+		e: () => htmlDisplayHandler.displayRating(store.keyToColumnMapping['e']),
+		r: () => htmlDisplayHandler.displayRating(store.keyToColumnMapping['r']),
+		t: () => htmlDisplayHandler.displayRating(store.keyToColumnMapping['t']),
 		' ': startSong,
 	};
 
@@ -31,7 +23,7 @@ export function addEventListeners(
 
 		if (
 			store.keyStates[event.key] === 'UP' ||
-			hitsHandler.closestHit(keyToColumnMapping[event.key]) instanceof
+			hitsHandler.closestHit(store.keyToColumnMapping[event.key]) instanceof
 				HoldableObject
 		) {
 			keyEvents[event.key]();
