@@ -6,10 +6,11 @@
     "build": "tsc ./src/main.ts --target esnext --moduleResolution bundler --outDir dist --AllowJs --checkJs --module esnext && rollup --config"
   },
   "devDependencies": {
-    "typescript": "^5.6.3",
-	"@rollup/plugin-node-resolve": "^15.3.0"
+    "@rollup/plugin-node-resolve": "^15.3.0",
+    "typescript": "^5.6.3"
   },
   "dependencies": {
+    "osu-classes": "^3.1.0",
     "osu-parsers": "^4.1.7"
   }
 }

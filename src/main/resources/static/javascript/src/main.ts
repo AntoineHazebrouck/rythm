@@ -1,9 +1,13 @@
 import { BeatmapDecoder } from 'osu-parsers';
+import { CanvasDisplayHandler, HtmlDisplayHandler } from './display-handler';
+import { ErrorHandler } from './error-handler';
 import { HitsHandler } from './hits-handler';
 import { addEventListeners } from './inputs-handler';
 import { getParameter } from './parameters-handler';
-import { DisplayHandler } from './display-handler';
-import { displayError } from './error-handler';
+
+const errorHandler = new ErrorHandler(
+	document.querySelector('#error-message')!
+);
 
 try {
 	const osuMap = await fetch(
@@ -18,13 +22,17 @@ try {
 	const hitsHandler = new HitsHandler(
 		new BeatmapDecoder().decodeFromString(osuMap)
 	);
-	const displayHandler = new DisplayHandler(
+	const canvasDisplayHandler = new CanvasDisplayHandler(
 		hitsHandler,
 		document.querySelector('canvas')!
 	);
+	const htmlDisplayHandler = new HtmlDisplayHandler(
+		document.querySelector('#note-rating')!,
+		hitsHandler
+	);
 
-	addEventListeners(hitsHandler);
-	displayHandler.startDisplaying();
+	addEventListeners(hitsHandler, canvasDisplayHandler, htmlDisplayHandler);
+	canvasDisplayHandler.startDisplaying();
 } catch (error) {
-	displayError(error);
+	errorHandler.displayError(error);
 }

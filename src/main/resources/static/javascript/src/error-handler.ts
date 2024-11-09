@@ -1,5 +1,11 @@
-const errorTag = document.querySelector("#error-message")!;
+export class ErrorHandler {
+	private readonly errorTag: HTMLElement;
 
-export function displayError(error: Error): void {
-	errorTag.innerHTML = error.message;
+	public constructor(errorTag: HTMLElement) {
+		this.errorTag = errorTag;
+	}
+
+	public displayError(error: Error): void {
+		this.errorTag.innerHTML = error.message;
+	}
 }

@@ -1,9 +1,10 @@
+import { HitResult } from 'osu-classes';
+import { HoldableObject } from 'osu-parsers';
 import { time } from './audio.js';
 import { HitsHandler } from './hits-handler.js';
 import { getParameter } from './parameters-handler.js';
-import { HoldableObject } from 'osu-parsers';
 
-export class DisplayHandler {
+export class CanvasDisplayHandler {
 	private readonly hitsHandler: HitsHandler;
 	private readonly canvas: HTMLCanvasElement;
 	private readonly context: CanvasRenderingContext2D;
@@ -73,5 +74,28 @@ export class DisplayHandler {
 	public startDisplaying(): void {
 		this.draw();
 		requestAnimationFrame(() => this.startDisplaying());
+	}
+}
+
+export class HtmlDisplayHandler {
+	private readonly hitsHandler: HitsHandler;
+	private readonly noteRating: HTMLElement;
+
+	public constructor(noteRating: HTMLElement, hitsHandler: HitsHandler) {
+		this.noteRating = noteRating;
+		this.hitsHandler = hitsHandler;
+	}
+
+	public displayRating(columnId: number): void {
+		const hit = this.hitsHandler.closestHit(columnId);
+
+		const offset = hit.startTime - time();
+
+		const rating =
+			hit instanceof HoldableObject && Math.abs(offset) <= hit.duration
+				? HitResult[HitResult.Perfect]
+				: HitResult[hit.hitWindows.resultFor(offset)];
+
+		if (rating) this.noteRating.innerHTML = rating;
 	}
 }
