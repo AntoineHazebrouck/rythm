@@ -5,13 +5,7 @@ export function addEventListeners(store: Store) {
 	document.addEventListener('keydown', (event) => {
 		event.preventDefault();
 
-		if (
-			store.getKeyState(event.key) === KeyState.UP
-			//  ||
-			// hitsHandler.closestHit(store.getColumnForKey(event.key)) instanceof
-			// 	HoldableObject
-		) {
-			// keyEvents[event.key]();
+		if (store.getKeyState(event.key) === KeyState.UP) {
 			store.setKeyState(event.key, KeyState.PRESSED);
 		}
 	});
