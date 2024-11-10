@@ -8,14 +8,20 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class CurrentOsuArchiveService {
 	private ZipFile zip;
+
+	public CurrentOsuArchiveService(ResourceLoader resourceLoader) throws ZipException, IOException {
+		this.zip = new ZipFile(resourceLoader.getResource("classpath:osu/200552 BlackYooh vs. siromaru - BLACK or WHITE.osz").getFile());
+	}
 
 	public Audio extractAudio() throws IOException {
 		ZipEntry audio = getLargestEntry(zip);
