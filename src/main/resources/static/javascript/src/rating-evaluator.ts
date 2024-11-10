@@ -17,33 +17,6 @@ export class RatingEvaluator implements Observer<Store> {
 		this.hitsHandler = hitsHandler;
 	}
 
-	private buildUserHitResult(
-		userHitTime: number,
-		actualHit: HitObject
-	): UserHitResult {
-		const offset = actualHit.startTime - userHitTime;
-		const rating =
-			actualHit instanceof HoldableObject &&
-			Math.abs(offset) <= actualHit.duration
-				? HitResult.Perfect
-				: actualHit.hitWindows.resultFor(offset);
-		return new UserHitResult(actualHit, userHitTime, rating);
-	}
-
-	private handleKeyPressed(key: string, store: Store) {
-		const columnId = store.getColumnForKey(key);
-
-		const closestHit = this.hitsHandler.closestHit(columnId);
-		const userHitResult = this.buildUserHitResult(time(), closestHit);
-
-		console.log(userHitResult);
-		
-		this.htmlDisplayHandler.displayRating(userHitResult.rating);
-		if (userHitResult.rating !== HitResult.None) {
-			store.addUserHit(userHitResult);
-		}
-	}
-
 	public update(store: Store, modificationType: ModificationType): void {
 		if (modificationType === ModificationType.INPUTS) {
 			if (store.getKeyState(' ') === KeyState.PRESSED) {
@@ -51,9 +24,17 @@ export class RatingEvaluator implements Observer<Store> {
 			}
 			Object.entries(store.getKeyStates()).forEach((entry) => {
 				const [key, state] = entry;
-	
+
 				if (state === KeyState.PRESSED) {
-					this.handleKeyPressed(key, store);
+					const result = this.hitsHandler.getResultFor(
+						time(),
+						store.getColumnForKey(key)
+					);
+
+					this.htmlDisplayHandler.displayRating(result.rating);
+					if (result.rating !== HitResult.None) {
+						store.addUserHit(result);
+					}
 				}
 			});
 		}

@@ -1,4 +1,4 @@
-import { Beatmap, HitObject, HitResult } from 'osu-classes';
+import { Beatmap, HitObject, HitResult, HitType } from 'osu-classes';
 import { HoldableObject } from 'osu-parsers';
 import { time } from './audio.js';
 import { Store } from './store.js';
@@ -36,7 +36,34 @@ export class HitsHandler {
 		);
 	}
 
-	public closestHit(columnId: number): HitObject {
+	// allows the boxing of missed (not hit by the user) notes in the store
+	public pastHits(): HitObject[] {
+		const data = this.hits.filter((hit) => {
+			const start = hit.startTime;
+			const duration = hit.hitWindows.windowFor(HitResult.Miss);
+			const noteEnd: number = start + duration;
+
+			return noteEnd < time();
+		});
+		return data;
+	}
+
+	// allows the displaying of all next notes
+	public nextHits(): HitObject[] {
+		return this.hits.filter((hit) => {
+			if (hit instanceof HoldableObject) {
+				return hit.endTime > time();
+			} else {
+				return hit.startTime > time();
+			}
+		});
+	}
+
+	private holdables(): HoldableObject[] {
+		return this.hits.filter((hit) => hit instanceof HoldableObject);
+	}
+
+	private closestHit(columnId: number): HitObject {
 		const closestHits = this.hits
 			.filter((hit) => !this.store.isAlreadyHit(hit))
 			.filter((hit) => hit.startX === this.columns()[columnId])
@@ -56,24 +83,21 @@ export class HitsHandler {
 		return closestHits[0];
 	}
 
-	public pastHits(): HitObject[] {
-		const data = this.hits.filter((hit) => {
-			const start = hit.startTime;
-			const duration = hit.hitWindows.windowFor(HitResult.Miss);
-			const noteEnd: number = start + duration;
+	public getResultFor(userHitTime: number, onColumn: number): UserHitResult {
+		// si le temps est dans un holdable alors Perfect
+		const holdable = this.holdables().find(
+			(holdable) =>
+				holdable.startTime <= userHitTime &&
+				holdable.endTime >= userHitTime
+		);
+		if (holdable) {
+			return new UserHitResult(holdable, userHitTime, HitResult.Perfect);
+		} else {
+			const closestHit = this.closestHit(onColumn);
 
-			return noteEnd < time();
-		});
-		return data;
-	}
-
-	public nextHits(): HitObject[] {
-		return this.hits.filter((hit) => {
-			if (hit instanceof HoldableObject) {
-				return hit.endTime > time();
-			} else {
-				return hit.startTime > time();
-			}
-		});
+			const offset = closestHit.startTime - userHitTime;
+			const rating = closestHit.hitWindows.resultFor(offset);
+			return new UserHitResult(closestHit, userHitTime, rating);
+		}
 	}
 }
