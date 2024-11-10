@@ -1,10 +1,13 @@
 import { BeatmapDecoder } from 'osu-parsers';
-import { CanvasDisplayHandler, HtmlDisplayHandler } from './display-handler';
+import { CanvasDisplayHandler } from './display/canvas-display-handler';
 import { ErrorHandler } from './error-handler';
+import { Gameloop } from './gameloop';
 import { HitsHandler } from './hits-handler';
 import { addEventListeners } from './inputs-handler';
 import { getParameter } from './parameters-handler';
 import { Store } from './store';
+import { HtmlDisplayHandler } from './display/html-display-handler';
+import { TimedEventsHandler } from './timed-events-handler';
 
 const errorHandler = new ErrorHandler(
 	document.querySelector('#error-message')!
@@ -40,9 +43,16 @@ try {
 	const htmlDisplayHandler = new HtmlDisplayHandler(
 		document.querySelector('#note-rating')!
 	);
+	const timedEventsHandler = new TimedEventsHandler(
+		htmlDisplayHandler,
+		hitsHandler,
+		store
+	);
 
 	addEventListeners(hitsHandler, htmlDisplayHandler, store);
-	canvasDisplayHandler.startDisplaying();
+
+	const gameloop = new Gameloop(canvasDisplayHandler, timedEventsHandler);
+	gameloop.loop();
 } catch (error) {
 	errorHandler.displayError(error);
 }

@@ -1,9 +1,8 @@
-import { HitResult } from 'osu-classes';
 import { HoldableObject } from 'osu-parsers';
-import { time } from './audio.js';
-import { HitsHandler } from './hits-handler.js';
-import { getParameter } from './parameters-handler.js';
-import { KeyState, Store } from './store.js';
+import { time } from '../audio.js';
+import { HitsHandler } from '../hits-handler.js';
+import { getParameter } from '../parameters-handler.js';
+import { KeyState, Store } from '../store.js';
 
 export class CanvasDisplayHandler {
 	private readonly store: Store;
@@ -11,7 +10,11 @@ export class CanvasDisplayHandler {
 	private readonly canvas: HTMLCanvasElement;
 	private readonly context: CanvasRenderingContext2D;
 
-	public constructor(store: Store, hitsHandler: HitsHandler, canvas: HTMLCanvasElement) {
+	public constructor(
+		store: Store,
+		hitsHandler: HitsHandler,
+		canvas: HTMLCanvasElement
+	) {
 		this.store = store;
 		this.hitsHandler = hitsHandler;
 		this.canvas = canvas;
@@ -38,7 +41,8 @@ export class CanvasDisplayHandler {
 
 			if (state === KeyState.PRESSED) {
 				this.context.fillStyle = 'red';
-				const laneX = this.laneWidth() * this.store.getColumnForKey(key);
+				const laneX =
+					this.laneWidth() * this.store.getColumnForKey(key);
 
 				this.context.beginPath();
 				this.context.rect(laneX, 0, this.laneWidth(), 10);
@@ -49,7 +53,7 @@ export class CanvasDisplayHandler {
 		});
 	}
 
-	private draw(): void {
+	public draw(): void {
 		this.fitToScreen();
 
 		this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -88,22 +92,5 @@ export class CanvasDisplayHandler {
 				this.context.stroke();
 			}
 		});
-	}
-
-	public startDisplaying(): void {
-		this.draw();
-		requestAnimationFrame(() => this.startDisplaying());
-	}
-}
-
-export class HtmlDisplayHandler {
-	private readonly noteRating: HTMLElement;
-
-	public constructor(noteRating: HTMLElement) {
-		this.noteRating = noteRating;
-	}
-
-	public displayRating(rating: HitResult): void {
-		this.noteRating.innerHTML = HitResult[rating];
 	}
 }

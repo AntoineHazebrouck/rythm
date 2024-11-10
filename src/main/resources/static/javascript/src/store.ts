@@ -1,5 +1,5 @@
 import { HitObject } from 'osu-classes';
-import { UserHit as UserHitResult } from './hits-handler';
+import { UserHitResult } from './hits-handler';
 
 export enum KeyState {
 	UP,
@@ -45,6 +45,8 @@ export class Store {
 	}
 
 	public isAlreadyHit(hit: HitObject): boolean {
-		return this.userHits.find((userHit) => userHit.actualHit === hit) ? true : false;
+		return this.userHits.find((userHit) => userHit.actualHit === hit)
+			? true
+			: false;
 	}
 }

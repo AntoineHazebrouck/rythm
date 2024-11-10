@@ -1,8 +1,8 @@
 import { HitObject, HitResult } from 'osu-classes';
 import { HoldableObject } from 'osu-parsers';
 import { startSong, time } from './audio.js';
-import { HtmlDisplayHandler } from './display-handler.js';
-import { HitsHandler, UserHit } from './hits-handler.js';
+import { HtmlDisplayHandler } from './display/html-display-handler.js';
+import { HitsHandler, UserHitResult } from './hits-handler.js';
 import { KeyState, Store } from './store.js';
 
 export function addEventListeners(
@@ -13,14 +13,14 @@ export function addEventListeners(
 	function buildUserHitResult(
 		userHitTime: number,
 		actualHit: HitObject
-	): UserHit {
+	): UserHitResult {
 		const offset = actualHit.startTime - userHitTime;
 		const rating =
 			actualHit instanceof HoldableObject &&
 			Math.abs(offset) <= actualHit.duration
 				? HitResult.Perfect
 				: actualHit.hitWindows.resultFor(offset);
-		return new UserHit(actualHit, userHitTime, rating);
+		return new UserHitResult(actualHit, userHitTime, rating);
 	}
 
 	function handleKeyPressed(key: string) {

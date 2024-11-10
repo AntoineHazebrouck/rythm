@@ -3,7 +3,7 @@ import { HoldableObject } from 'osu-parsers';
 import { time } from './audio.js';
 import { Store } from './store.js';
 
-export class UserHit {
+export class UserHitResult {
 	public readonly actualHit: HitObject;
 	public readonly userHitTime: number;
 	public readonly rating: HitResult;
@@ -54,6 +54,17 @@ export class HitsHandler {
 			});
 
 		return closestHits[0];
+	}
+
+	public pastHits(): HitObject[] {
+		const data = this.hits.filter((hit) => {
+			const start = hit.startTime;
+			const duration = hit.hitWindows.windowFor(HitResult.Miss);
+			const noteEnd: number = start + duration;
+
+			return noteEnd < time();
+		});
+		return data;
 	}
 
 	public nextHits(): HitObject[] {
