@@ -5,6 +5,6 @@ export function startSong() {
 	audio.play();
 }
 
-export function time() {
+export function time(): number {
 	return Math.round(audio.currentTime * 1000);
 }

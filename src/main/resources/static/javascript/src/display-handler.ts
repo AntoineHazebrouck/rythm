@@ -3,14 +3,16 @@ import { HoldableObject } from 'osu-parsers';
 import { time } from './audio.js';
 import { HitsHandler } from './hits-handler.js';
 import { getParameter } from './parameters-handler.js';
-import { store } from './store.js';
+import { KeyState, Store } from './store.js';
 
 export class CanvasDisplayHandler {
+	private readonly store: Store;
 	private readonly hitsHandler: HitsHandler;
 	private readonly canvas: HTMLCanvasElement;
 	private readonly context: CanvasRenderingContext2D;
 
-	public constructor(hitsHandler: HitsHandler, canvas: HTMLCanvasElement) {
+	public constructor(store: Store, hitsHandler: HitsHandler, canvas: HTMLCanvasElement) {
+		this.store = store;
 		this.hitsHandler = hitsHandler;
 		this.canvas = canvas;
 		this.context = canvas.getContext('2d')!;
@@ -31,12 +33,12 @@ export class CanvasDisplayHandler {
 		this.context.lineTo(this.canvas.width, 0);
 		this.context.stroke();
 
-		Object.entries(store.keyStates).forEach((entry) => {
+		Object.entries(this.store.getKeyStates()).forEach((entry) => {
 			const [key, state] = entry;
 
-			if (state === 'PRESSED') {
+			if (state === KeyState.PRESSED) {
 				this.context.fillStyle = 'red';
-				const laneX = this.laneWidth() * store.keyToColumnMapping[key];
+				const laneX = this.laneWidth() * this.store.getColumnForKey(key);
 
 				this.context.beginPath();
 				this.context.rect(laneX, 0, this.laneWidth(), 10);
@@ -95,24 +97,13 @@ export class CanvasDisplayHandler {
 }
 
 export class HtmlDisplayHandler {
-	private readonly hitsHandler: HitsHandler;
 	private readonly noteRating: HTMLElement;
 
-	public constructor(noteRating: HTMLElement, hitsHandler: HitsHandler) {
+	public constructor(noteRating: HTMLElement) {
 		this.noteRating = noteRating;
-		this.hitsHandler = hitsHandler;
 	}
 
-	public displayRating(columnId: number): void {
-		const hit = this.hitsHandler.closestHit(columnId);
-
-		const offset = hit.startTime - time();
-
-		const rating =
-			hit instanceof HoldableObject && Math.abs(offset) <= hit.duration
-				? HitResult[HitResult.Perfect]
-				: HitResult[hit.hitWindows.resultFor(offset)];
-
-		if (rating) this.noteRating.innerHTML = rating;
+	public displayRating(rating: HitResult): void {
+		this.noteRating.innerHTML = HitResult[rating];
 	}
 }

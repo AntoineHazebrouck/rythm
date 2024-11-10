@@ -1,20 +1,46 @@
+import { HitObject, HitResult } from 'osu-classes';
 import { HoldableObject } from 'osu-parsers';
-import { startSong } from './audio.js';
-import { CanvasDisplayHandler, HtmlDisplayHandler } from './display-handler.js';
-import { HitsHandler } from './hits-handler.js';
-import { store } from './store.js';
+import { startSong, time } from './audio.js';
+import { HtmlDisplayHandler } from './display-handler.js';
+import { HitsHandler, UserHit } from './hits-handler.js';
+import { KeyState, Store } from './store.js';
 
 export function addEventListeners(
 	hitsHandler: HitsHandler,
-	canvasDisplayHandler: CanvasDisplayHandler,
-	htmlDisplayHandler: HtmlDisplayHandler
+	htmlDisplayHandler: HtmlDisplayHandler,
+	store: Store
 ) {
+	function buildUserHitResult(
+		userHitTime: number,
+		actualHit: HitObject
+	): UserHit {
+		const offset = actualHit.startTime - userHitTime;
+		const rating =
+			actualHit instanceof HoldableObject &&
+			Math.abs(offset) <= actualHit.duration
+				? HitResult.Perfect
+				: actualHit.hitWindows.resultFor(offset);
+		return new UserHit(actualHit, userHitTime, rating);
+	}
+
+	function handleKeyPressed(key: string) {
+		const columnId = store.getColumnForKey(key);
+
+		const closestHit = hitsHandler.closestHit(columnId);
+		const userHitResult = buildUserHitResult(time(), closestHit);
+
+		htmlDisplayHandler.displayRating(userHitResult.rating);
+		if (userHitResult.rating !== HitResult.None) {
+			store.addUserHit(userHitResult);
+		}
+	}
+
 	const keyEvents: Record<string, () => void> = {
-		a: () => htmlDisplayHandler.displayRating(store.keyToColumnMapping['a']),
-		z: () => htmlDisplayHandler.displayRating(store.keyToColumnMapping['z']),
-		e: () => htmlDisplayHandler.displayRating(store.keyToColumnMapping['e']),
-		r: () => htmlDisplayHandler.displayRating(store.keyToColumnMapping['r']),
-		t: () => htmlDisplayHandler.displayRating(store.keyToColumnMapping['t']),
+		a: () => handleKeyPressed('a'),
+		z: () => handleKeyPressed('z'),
+		e: () => handleKeyPressed('e'),
+		r: () => handleKeyPressed('r'),
+		t: () => handleKeyPressed('t'),
 		' ': startSong,
 	};
 
@@ -22,18 +48,18 @@ export function addEventListeners(
 		event.preventDefault();
 
 		if (
-			store.keyStates[event.key] === 'UP' ||
-			hitsHandler.closestHit(store.keyToColumnMapping[event.key]) instanceof
+			store.getKeyState(event.key) === KeyState.UP ||
+			hitsHandler.closestHit(store.getColumnForKey(event.key)) instanceof
 				HoldableObject
 		) {
 			keyEvents[event.key]();
-			store.keyStates[event.key] = 'PRESSED';
+			store.setKeyState(event.key, KeyState.PRESSED);
 		}
 	});
 
 	document.addEventListener('keyup', (event) => {
 		event.preventDefault();
 
-		store.keyStates[event.key] = 'UP';
+		store.setKeyState(event.key, KeyState.UP);
 	});
 }

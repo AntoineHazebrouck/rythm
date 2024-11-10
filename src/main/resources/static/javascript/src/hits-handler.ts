@@ -1,12 +1,30 @@
-import { getParameter } from './parameters-handler.js';
+import { Beatmap, HitObject, HitResult } from 'osu-classes';
+import { HoldableObject } from 'osu-parsers';
 import { time } from './audio.js';
-import { BeatmapDecoder, HittableObject, HoldableObject } from 'osu-parsers';
-import { Beatmap, HitObject } from 'osu-classes';
+import { Store } from './store.js';
+
+export class UserHit {
+	public readonly actualHit: HitObject;
+	public readonly userHitTime: number;
+	public readonly rating: HitResult;
+
+	public constructor(
+		actualHit: HitObject,
+		userHitTime: number,
+		rating: HitResult
+	) {
+		this.actualHit = actualHit;
+		this.userHitTime = userHitTime;
+		this.rating = rating;
+	}
+}
 
 export class HitsHandler {
 	private readonly hits: HitObject[];
+	private readonly store: Store;
 
-	public constructor(beatmap: Beatmap) {
+	public constructor(beatmap: Beatmap, store: Store) {
+		this.store = store;
 		this.hits = beatmap.hitObjects.sort(
 			(left, right) => left.startTime - right.startTime
 		);
@@ -20,6 +38,7 @@ export class HitsHandler {
 
 	public closestHit(columnId: number): HitObject {
 		const closestHits = this.hits
+			.filter((hit) => !this.store.isAlreadyHit(hit))
 			.filter((hit) => hit.startX === this.columns()[columnId])
 			.sort((left, right) => {
 				const leftOffset =
@@ -47,4 +66,3 @@ export class HitsHandler {
 		});
 	}
 }
-
