@@ -14,4 +14,12 @@ export class Optional<T> {
 			runnable(this.value);
 		}
 	}
+
+	public map<O>(mapping: (value: T) => O): Optional<O> {
+		if (this.value) {
+			return Optional.of(mapping(this.value));
+		} else {
+			return Optional.empty();
+		}
+	}
 }

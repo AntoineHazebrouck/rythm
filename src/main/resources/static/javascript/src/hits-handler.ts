@@ -1,4 +1,4 @@
-import { Beatmap, HitObject, HitResult, HitType } from 'osu-classes';
+import { Beatmap, HitObject, HitResult } from 'osu-classes';
 import { HoldableObject } from 'osu-parsers';
 import { time } from './audio';
 import { KeyState, Store } from './store';
@@ -66,7 +66,7 @@ export class HitsHandler {
 			.filter((hit) => hit instanceof HoldableObject);
 	}
 
-	private closestHit(columnId: number): HitObject {
+	private closestHit(columnId: number): Optional<HitObject> {
 		const closestHits = this.hits
 			.filter((hit) => !this.store.isAlreadyHit(hit))
 			.filter((hit) => hit.startX === this.columns()[columnId])
@@ -83,7 +83,7 @@ export class HitsHandler {
 				return Math.abs(leftOffset) - Math.abs(rightOffset);
 			});
 
-		return closestHits[0];
+		return Optional.of(closestHits[0]);
 	}
 
 	public getResultFor(
@@ -103,21 +103,17 @@ export class HitsHandler {
 					new UserHitResult(holdable, userHitTime, HitResult.Perfect)
 				);
 			} else {
-				console.log('miss');
-
 				return Optional.of(
 					new UserHitResult(holdable, userHitTime, HitResult.Miss)
 				);
 			}
 		} else {
 			if (keyState === KeyState.PRESSED) {
-				const closestHit = this.closestHit(onColumn);
-
-				const offset = closestHit.startTime - userHitTime;
-				const rating = closestHit.hitWindows.resultFor(offset);
-				return Optional.of(
-					new UserHitResult(closestHit, userHitTime, rating)
-				);
+				return this.closestHit(onColumn).map((closestHit) => {
+					const offset = closestHit.startTime - userHitTime;
+					const rating = closestHit.hitWindows.resultFor(offset);
+					return new UserHitResult(closestHit, userHitTime, rating);
+				});
 			} else {
 				return Optional.empty();
 			}
