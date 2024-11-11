@@ -1,31 +1,29 @@
 import { Beatmap, HitObject, HitResult } from 'osu-classes';
 import { HoldableObject } from 'osu-parsers';
-import { time } from './audio';
+import { AudioHandler } from './audio-handler';
 import { KeyState } from './inputs/key-state';
 import { Store } from './store';
 import { Optional } from './utils/optional';
 
 export class UserHitResult {
-	public readonly actualHit: HitObject;
-	public readonly userHitTime: number;
-	public readonly rating: HitResult;
-
 	public constructor(
-		actualHit: HitObject,
-		userHitTime: number,
-		rating: HitResult
-	) {
-		this.actualHit = actualHit;
-		this.userHitTime = userHitTime;
-		this.rating = rating;
-	}
+		public readonly actualHit: HitObject,
+		public readonly userHitTime: number,
+		public readonly rating: HitResult
+	) {}
 }
 
 export class HitsHandler {
+	private readonly audioHandler: AudioHandler;
 	private readonly hits: HitObject[];
 	private readonly store: Store;
 
-	public constructor(beatmap: Beatmap, store: Store) {
+	public constructor(
+		beatmap: Beatmap,
+		store: Store,
+		audioHandler: AudioHandler
+	) {
+		this.audioHandler = audioHandler;
 		this.store = store;
 		this.hits = beatmap.hitObjects.sort(
 			(left, right) => left.startTime - right.startTime
@@ -45,7 +43,7 @@ export class HitsHandler {
 			const duration = hit.hitWindows.windowFor(HitResult.Miss);
 			const noteEnd: number = start + duration;
 
-			return noteEnd < time();
+			return noteEnd < this.audioHandler.time();
 		});
 		return data;
 	}
@@ -54,9 +52,9 @@ export class HitsHandler {
 	public nextHits(): HitObject[] {
 		return this.hits.filter((hit) => {
 			if (hit instanceof HoldableObject) {
-				return hit.endTime > time();
+				return hit.endTime > this.audioHandler.time();
 			} else {
-				return hit.startTime > time();
+				return hit.startTime > this.audioHandler.time();
 			}
 		});
 	}
@@ -75,11 +73,11 @@ export class HitsHandler {
 				const leftOffset =
 					(left instanceof HoldableObject
 						? left.endTime
-						: left.startTime) - time();
+						: left.startTime) - this.audioHandler.time();
 				const rightOffset =
 					(right instanceof HoldableObject
 						? right.endTime
-						: right.startTime) - time();
+						: right.startTime) - this.audioHandler.time();
 
 				return Math.abs(leftOffset) - Math.abs(rightOffset);
 			});

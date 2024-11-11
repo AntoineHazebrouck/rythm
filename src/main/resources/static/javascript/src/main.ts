@@ -9,6 +9,7 @@ import { getParameter } from './parameters-handler';
 import { RatingEvaluator } from './rating-evaluator';
 import { Store } from './store';
 import { TimedEventsHandler } from './timed-events-handler';
+import { AudioHandler } from './audio-handler';
 
 const store = new Store({
 	a: 0,
@@ -24,6 +25,8 @@ const htmlDisplayHandler = new HtmlDisplayHandler(
 );
 htmlDisplayHandler.displayRating(HitResult.None);
 
+const audioHandler = new AudioHandler(new Audio('/audio'));
+
 try {
 	const osuMap = await fetch(
 		getParameter('beatmap-url').orElseThrow(
@@ -36,10 +39,12 @@ try {
 
 	const hitsHandler = new HitsHandler(
 		new BeatmapDecoder().decodeFromString(osuMap),
-		store
+		store,
+		audioHandler
 	);
 
 	const ratingEvaluator = new RatingEvaluator(
+		audioHandler,
 		htmlDisplayHandler,
 		hitsHandler,
 		store
@@ -48,6 +53,7 @@ try {
 	const canvasDisplayHandler = new CanvasDisplayHandler(
 		store,
 		hitsHandler,
+		audioHandler,
 		document.querySelector('canvas')!
 	);
 

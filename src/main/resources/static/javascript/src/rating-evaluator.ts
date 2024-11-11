@@ -1,14 +1,15 @@
 import { HitResult } from 'osu-classes';
-import { startSong, time } from './audio';
+import { AudioHandler } from './audio-handler';
 import { HtmlDisplayHandler } from './display/html-display-handler';
 import { HitsHandler } from './hits-handler';
 import { KeyState } from './inputs/key-state';
 import { KeyStatus } from './inputs/key-status';
-import { Observer } from './utils/observer-pattern';
 import { Store } from './store';
+import { Observer } from './utils/observer-pattern';
 
 export class RatingEvaluator implements Observer<KeyStatus> {
 	public constructor(
+		private readonly audioHandler: AudioHandler,
 		private readonly htmlDisplayHandler: HtmlDisplayHandler,
 		private readonly hitsHandler: HitsHandler,
 		private readonly store: Store
@@ -17,14 +18,14 @@ export class RatingEvaluator implements Observer<KeyStatus> {
 	update(modifiedData: KeyStatus): void {
 		if (
 			modifiedData.key === ' ' &&
-			modifiedData.state === KeyState.PRESSED
+			modifiedData.state === KeyState.PRESSED // refactor, move to a new observer
 		) {
-			startSong();
+			this.audioHandler.startSong();
 		} else {
 			this.hitsHandler
 				.getResultFor(
 					modifiedData.state,
-					time(),
+					this.audioHandler.time(),
 					this.store.getColumnForKey(modifiedData.key)
 				)
 				.ifPresent((result) => {

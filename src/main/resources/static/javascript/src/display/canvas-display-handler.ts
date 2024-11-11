@@ -1,23 +1,26 @@
 import { HoldableObject } from 'osu-parsers';
-import { time } from '../audio.js';
 import { HitsHandler } from '../hits-handler.js';
 import { getParameter } from '../parameters-handler.js';
 import { Store } from '../store.js';
 import { KeyState } from '../inputs/key-state.js';
+import { AudioHandler } from '../audio-handler.js';
 
 export class CanvasDisplayHandler {
 	private readonly store: Store;
 	private readonly hitsHandler: HitsHandler;
+	private readonly audioHandler: AudioHandler;
 	private readonly canvas: HTMLCanvasElement;
 	private readonly context: CanvasRenderingContext2D;
 
 	public constructor(
 		store: Store,
 		hitsHandler: HitsHandler,
+		audioHandler: AudioHandler,
 		canvas: HTMLCanvasElement
 	) {
 		this.store = store;
 		this.hitsHandler = hitsHandler;
+		this.audioHandler = audioHandler;
 		this.canvas = canvas;
 		this.context = canvas.getContext('2d')!;
 	}
@@ -52,6 +55,15 @@ export class CanvasDisplayHandler {
 		});
 	}
 
+	private getDisplayedY(actualY: number): number {
+		const spacingRatio = Number(
+			getParameter('note-spacing').orElseThrow(
+				new Error('Could not read note-spacing property')
+			)
+		);
+		return (actualY - this.audioHandler.time()) / spacingRatio;
+	}
+
 	public draw(): void {
 		this.fitToScreen();
 
@@ -60,33 +72,25 @@ export class CanvasDisplayHandler {
 		this.drawNoteLimitLine();
 
 		this.hitsHandler.nextHits().forEach((hit) => {
-			function getDisplayedY(actualY: number) {
-				const spacingRatio = Number(
-					getParameter('note-spacing').orElseThrow(
-						new Error('Could not read note-spacing property')
-					)
-				);
-				return (actualY - time()) / spacingRatio;
-			}
-
 			this.context.beginPath();
 			const laneX =
 				this.laneWidth() *
 				this.hitsHandler.columns().findIndex((x) => x === hit.startX);
-			this.context.moveTo(laneX, getDisplayedY(hit.startTime));
+			this.context.moveTo(laneX, this.getDisplayedY(hit.startTime));
 
 			if (hit instanceof HoldableObject) {
 				this.context.rect(
 					laneX,
-					getDisplayedY(hit.startTime),
+					this.getDisplayedY(hit.startTime),
 					this.laneWidth(),
-					getDisplayedY(hit.endTime) - getDisplayedY(hit.startTime)
+					this.getDisplayedY(hit.endTime) -
+						this.getDisplayedY(hit.startTime)
 				);
 				this.context.fill();
 			} else {
 				this.context.lineTo(
 					laneX + this.laneWidth(),
-					getDisplayedY(hit.startTime)
+					this.getDisplayedY(hit.startTime)
 				);
 				this.context.stroke();
 			}
