@@ -4,14 +4,12 @@ import { KeyState } from './inputs/key-state';
 import { KeyStatus } from './inputs/key-status';
 import { Observer, Sender } from './utils/observer-pattern';
 
-type Sendable = KeyStatus | UserHitResult;
-
-export class Store implements Sender<Sendable> {
+export class Store implements Sender<KeyStatus> {
 	private readonly keyStates: KeyStatus[];
 	private readonly keyToColumnMapping: Record<string, number>;
 	private readonly userHits: UserHitResult[];
 
-	public readonly observers: Observer<Sendable>[];
+	public readonly observers: Observer<KeyStatus>[];
 
 	public constructor(keyToColumnMapping: Record<string, number>) {
 		this.keyStates = [
@@ -27,7 +25,7 @@ export class Store implements Sender<Sendable> {
 		this.observers = [];
 	}
 
-	notify(modifiedData: Sendable): void {
+	notify(modifiedData: KeyStatus): void {
 		this.observers.forEach((observer) => observer.update(modifiedData));
 	}
 
