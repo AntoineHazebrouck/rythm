@@ -5,21 +5,30 @@
 
 <body>
 	<header th:replace="~{../fragments/general.html :: header(activePage='Setup')}"> </header>
-	<main>
-		<h1>Choose difficulty</h1>
+	<main class="container">
 
-		<form action="/setup-game" method="post">
-			<div th:each="name: ${beatmapsNames}">
-				<input type="radio" name="beatmap-name" th:text="${name}" th:value="${name}">
-				<br>
-			</div>
-			<div>
-				<input name="note-spacing" type="number" value="2">
-				<br>
-			</div>
+		<div class="col-10 mx-auto card p-3">
+			<h1 class="text-center">Choose difficulty and settings</h1>
+			<br>
+			<form action="/setup-game" method="post">
+				<div class="col">
+					<div class="form-group p-3">
+						<div th:each="name: ${beatmapsNames}">
+							<input type="radio" name="beatmap-name" th:text="' ' + ${name}" th:value="${name}">
+							<br>
+						</div>
+					</div>
+					<div class="form-group p-3">
+						<label for="osu-archive">Notes spacing : </label>
+						<input name="note-spacing" id="note-spacing" type="number" value="2">
+					</div>
+				</div>
 
-			<button type="submit">Start game</button>
-		</form>
+				<div class="col text-center">
+					<button type="submit" class="btn btn-primary p-3">Start game</button>
+				</div>
+			</form>
+		</div>
 	</main>
 </body>
 
