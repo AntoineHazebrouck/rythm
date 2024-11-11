@@ -25,17 +25,14 @@ export class RatingEvaluator implements Observer<Store> {
 			Object.entries(store.getKeyStates()).forEach((entry) => {
 				const [key, state] = entry;
 
-				if (state === KeyState.PRESSED) {
-					const result = this.hitsHandler.getResultFor(
-						time(),
-						store.getColumnForKey(key)
-					);
-
-					this.htmlDisplayHandler.displayRating(result.rating);
-					if (result.rating !== HitResult.None) {
-						store.addUserHit(result);
-					}
-				}
+				this.hitsHandler
+					.getResultFor(state, time(), store.getColumnForKey(key))
+					.ifPresent((result) => {
+						this.htmlDisplayHandler.displayRating(result.rating);
+						if (result.rating !== HitResult.None) {
+							store.addUserHit(result);
+						}
+					});
 			});
 		}
 	}

@@ -1,7 +1,8 @@
 import { Beatmap, HitObject, HitResult, HitType } from 'osu-classes';
 import { HoldableObject } from 'osu-parsers';
-import { time } from './audio.js';
-import { Store } from './store.js';
+import { time } from './audio';
+import { KeyState, Store } from './store';
+import { Optional } from './utils/optional';
 
 export class UserHitResult {
 	public readonly actualHit: HitObject;
@@ -59,8 +60,10 @@ export class HitsHandler {
 		});
 	}
 
-	private holdables(): HoldableObject[] {
-		return this.hits.filter((hit) => hit instanceof HoldableObject);
+	private holdables(columnId: number): HoldableObject[] {
+		return this.hits
+			.filter((hit) => hit.startX === this.columns()[columnId])
+			.filter((hit) => hit instanceof HoldableObject);
 	}
 
 	private closestHit(columnId: number): HitObject {
@@ -83,21 +86,41 @@ export class HitsHandler {
 		return closestHits[0];
 	}
 
-	public getResultFor(userHitTime: number, onColumn: number): UserHitResult {
+	public getResultFor(
+		keyState: KeyState,
+		userHitTime: number,
+		onColumn: number
+	): Optional<UserHitResult> {
 		// si le temps est dans un holdable alors Perfect
-		const holdable = this.holdables().find(
+		const holdable = this.holdables(onColumn).find(
 			(holdable) =>
 				holdable.startTime <= userHitTime &&
 				holdable.endTime >= userHitTime
 		);
 		if (holdable) {
-			return new UserHitResult(holdable, userHitTime, HitResult.Perfect);
-		} else {
-			const closestHit = this.closestHit(onColumn);
+			if (keyState === KeyState.PRESSED) {
+				return Optional.of(
+					new UserHitResult(holdable, userHitTime, HitResult.Perfect)
+				);
+			} else {
+				console.log('miss');
 
-			const offset = closestHit.startTime - userHitTime;
-			const rating = closestHit.hitWindows.resultFor(offset);
-			return new UserHitResult(closestHit, userHitTime, rating);
+				return Optional.of(
+					new UserHitResult(holdable, userHitTime, HitResult.Miss)
+				);
+			}
+		} else {
+			if (keyState === KeyState.PRESSED) {
+				const closestHit = this.closestHit(onColumn);
+
+				const offset = closestHit.startTime - userHitTime;
+				const rating = closestHit.hitWindows.resultFor(offset);
+				return Optional.of(
+					new UserHitResult(closestHit, userHitTime, rating)
+				);
+			} else {
+				return Optional.empty();
+			}
 		}
 	}
 }
