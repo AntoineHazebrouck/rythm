@@ -5,12 +5,20 @@
 
 <body>
 	<header th:replace="~{../fragments/general.html :: header(activePage='Home')}"> </header>
-	<main>
-		<h1>Select an osu archive</h1>
-		<form action="/load-osu-archive" method="post" enctype="multipart/form-data">
-			<input name="osu-archive" type="file" accept=".osz" />
-			<button type="submit">Load file</button>
-		</form>
+	<main class="container">
+
+		<div class="col-4 mx-auto card text-center p-3">
+			<h1>Select an osu archive</h1>
+			<br>
+			<form action="/load-osu-archive" method="post" enctype="multipart/form-data">
+				<div class="form-group p-3">
+					<label for="osu-archive">OSU archive file : </label>
+					<input class="form-control-file" name="osu-archive" id="osu-archive" type="file" accept=".osz" />
+				</div>
+				<button type="submit" class="btn btn-primary p-3">Load OSU archive</button>
+			</form>
+		</div>
+
 	</main>
 </body>
 
