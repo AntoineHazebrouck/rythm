@@ -28,8 +28,10 @@ export class RatingEvaluator implements Observer<Store> {
 				this.hitsHandler
 					.getResultFor(state, time(), store.getColumnForKey(key))
 					.ifPresent((result) => {
-						this.htmlDisplayHandler.displayRating(result.rating);
 						if (result.rating !== HitResult.None) {
+							this.htmlDisplayHandler.displayRating(
+								result.rating
+							);
 							store.addUserHit(result);
 						}
 					});

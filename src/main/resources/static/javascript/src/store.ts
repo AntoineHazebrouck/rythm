@@ -55,13 +55,11 @@ export class Store implements Subject {
 
 	public addUserHit(userHitResult: UserHitResult) {
 		this.userHits.push(userHitResult);
-		console.log(this);
 		this.notify(ModificationType.USER_HITS);
 	}
 
 	public setKeyState(key: string, state: KeyState): void {
 		this.keyStates[key] = state;
-		console.log(this);
 		this.notify(ModificationType.INPUTS);
 	}
 
