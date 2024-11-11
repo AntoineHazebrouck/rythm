@@ -90,9 +90,6 @@ export class HitsHandler {
 		userHitTime: number,
 		onColumn: number
 	): Optional<UserHitResult> {
-		console.log('called');
-
-		// si le temps est dans un holdable alors Perfect
 		const holdable = this.holdables(onColumn).find(
 			(holdable) =>
 				holdable.startTime <= userHitTime &&

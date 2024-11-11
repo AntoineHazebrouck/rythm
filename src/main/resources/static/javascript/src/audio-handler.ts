@@ -6,10 +6,6 @@ export class AudioHandler implements Observer<Volume> {
 	public constructor(private readonly audio: HTMLAudioElement) {}
 
 	update(modifiedData: Volume): void {
-		console.log(modifiedData);
-		
-		console.log('volume ' + modifiedData);
-
 		this.audio.volume = modifiedData;
 	}
 

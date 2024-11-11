@@ -5,15 +5,38 @@ import { KeyStatus } from './inputs/key-status';
 import { Observer, Sender } from './utils/observer-pattern';
 import { Volume } from './audio-handler';
 
-// type Sendable = KeyStatus | Volume;
+class KeySender implements Sender<KeyStatus> {
+	public constructor(private readonly observers: Observer<KeyStatus>[]) {}
 
-export class Store implements Sender<Volume>, Sender<KeyStatus> {
+	attach(observer: Observer<KeyStatus>): void {
+		this.observers.push(observer);
+	}
+
+	notify(modifiedData: KeyStatus): void {
+		this.observers.forEach((observer) => observer.update(modifiedData));
+	}
+}
+
+class VolumeSender implements Sender<Volume> {
+	public constructor(private readonly observers: Observer<Volume>[]) {}
+
+	attach(observer: Observer<number>): void {
+		this.observers.push(observer);
+	}
+
+	notify(modifiedData: Volume): void {
+		this.observers.forEach((observer) => observer.update(modifiedData));
+	}
+}
+
+export class Store {
 	private volume: Volume;
 	private readonly keyStates: KeyStatus[];
 	private readonly keyToColumnMapping: Record<string, number>;
 	private readonly userHits: UserHitResult[];
 
-	public readonly observers: Observer<Volume | KeyStatus>[];
+	public readonly keySender: Sender<KeyStatus>;
+	public readonly volumeSender: Sender<Volume>;
 
 	public constructor(keyToColumnMapping: Record<string, number>) {
 		this.keyStates = [
@@ -26,22 +49,14 @@ export class Store implements Sender<Volume>, Sender<KeyStatus> {
 		];
 		this.keyToColumnMapping = keyToColumnMapping;
 		this.userHits = [];
-		this.observers = [];
+		this.keySender = new KeySender([]);
+		this.volumeSender = new VolumeSender([]);
 		this.volume = 0;
 	}
 
-	notify(modifiedData: number | KeyStatus): void {
-		this.observers.forEach((observer) => observer.update(modifiedData));
-	}
-
-
-	// notify(modifiedData: Sendable): void {
-	// 	this.observers.forEach((observer) => observer.update(modifiedData));
-	// }
-
 	public setVolume(volume: Volume) {
 		this.volume = volume;
-		this.notify(volume);
+		this.volumeSender.notify(volume);
 	}
 
 	public getKeyStates(): KeyStatus[] {
@@ -62,7 +77,7 @@ export class Store implements Sender<Volume>, Sender<KeyStatus> {
 		this.keyStates[
 			this.keyStates.findIndex((searchKey) => searchKey.key === key)
 		] = newKeyStatus;
-		this.notify(newKeyStatus);
+		this.keySender.notify(newKeyStatus);
 	}
 
 	public getColumnForKey(key: string) {

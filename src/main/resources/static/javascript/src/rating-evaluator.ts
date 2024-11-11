@@ -16,9 +16,6 @@ export class RatingEvaluator implements Observer<KeyStatus> {
 	) {}
 
 	update(modifiedData: KeyStatus): void {
-
-		console.log(modifiedData);
-		
 		if (
 			modifiedData.key === ' ' &&
 			modifiedData.state === KeyState.PRESSED // refactor, move to a new observer
