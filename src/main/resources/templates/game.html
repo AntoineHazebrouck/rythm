@@ -7,16 +7,18 @@
 <body>
 	<header th:replace="~{../fragments/general.html :: header(activePage='Game')}"> </header>
 	<main class="container">
-		<!-- <div class="row">
-			<div id="error-message" class="alert alert-danger col-4 m-3 mx-auto" role="alert"></div>
-		</div> TODO -->
-
 		<div class="row">
 			<!-- handled by javascript -->
-			<div id="note-rating"></div> 
+			<div id="error-message"></div>
 		</div>
 
 		<div class="row">
+			<!-- handled by javascript -->
+			<div id="note-rating"></div>
+		</div>
+
+		<div class="row">
+			<!-- handled by javascript -->
 			<canvas class="card col mx-auto"></canvas>
 		</div>
 	</main>

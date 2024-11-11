@@ -1,7 +1,10 @@
 import { HitResult } from 'osu-classes';
 
 export class HtmlDisplayHandler {
-	public constructor(private readonly noteRating: HTMLElement) {}
+	public constructor(
+		private readonly noteRating: HTMLElement,
+		private readonly error: HTMLElement
+	) {}
 
 	public displayRating(rating: HitResult): void {
 		const resultToAlertMapping = {
@@ -18,8 +21,15 @@ export class HtmlDisplayHandler {
 					? resultToAlertMapping[rating]
 					: 'alert-secondary'
 			} col-4 m-3 mx-auto" role="alert">
-				<h1 class="text-center">${rating}</h1>
+				<h1 class="text-center">${HitResult[rating]}</h1>
 			</div>
+		`;
+	}
+
+	public displayError(error: Error): void {
+		console.log(error);
+		this.error.innerHTML = `
+			<div class="alert alert-danger col-4 m-3 mx-auto" role="alert">${error.message}</div>
 		`;
 	}
 }
