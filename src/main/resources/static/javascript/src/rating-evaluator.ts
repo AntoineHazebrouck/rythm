@@ -16,24 +16,17 @@ export class RatingEvaluator implements Observer<KeyStatus> {
 	) {}
 
 	update(modifiedData: KeyStatus): void {
-		if (
-			modifiedData.key === ' ' &&
-			modifiedData.state === KeyState.PRESSED // refactor, move to a new observer
-		) {
-			this.audioHandler.startSong();
-		} else {
-			this.hitsHandler
-				.getResultFor(
-					modifiedData.state,
-					this.audioHandler.time(),
-					this.store.getColumnForKey(modifiedData.key)
-				)
-				.ifPresent((result) => {
-					if (result.rating !== HitResult.None) {
-						this.htmlDisplayHandler.displayRating(result.rating);
-						this.store.addUserHit(result);
-					}
-				});
-		}
+		this.hitsHandler
+			.getResultFor(
+				modifiedData.state,
+				this.audioHandler.time(),
+				this.store.getColumnForKey(modifiedData.key)
+			)
+			.ifPresent((result) => {
+				if (result.rating !== HitResult.None) {
+					this.htmlDisplayHandler.displayRating(result.rating);
+					this.store.addUserHit(result);
+				}
+			});
 	}
 }

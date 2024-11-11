@@ -64,6 +64,7 @@ try {
 	);
 
 	store.keySender.attach(ratingEvaluator);
+	store.keySender.attach(audioHandler);
 	store.volumeSender.attach(audioHandler);
 
 	addEventListeners(store, document.querySelector('#volume')!);
