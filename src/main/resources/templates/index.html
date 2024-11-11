@@ -4,7 +4,7 @@
 <head th:replace="~{../fragments/general.html :: head}"></head>
 
 <body>
-	<header th:replace="~{../fragments/general.html :: header}"> </header>
+	<header th:replace="~{../fragments/general.html :: header(activePage='Home')}"> </header>
 	<main>
 		<h1>Select an osu archive</h1>
 		<form action="/load-osu-archive" method="post" enctype="multipart/form-data">

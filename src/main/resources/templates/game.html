@@ -5,7 +5,7 @@
 <script src='javascript/bundle.js' type="module" defer></script>
 
 <body>
-	<header th:replace="~{../fragments/general.html :: header}"> </header>
+	<header th:replace="~{../fragments/general.html :: header(activePage='Game')}"> </header>
 	<main>
 		<h1 id="error-message"></h1>
 		<h1 id="note-rating"></h1>
