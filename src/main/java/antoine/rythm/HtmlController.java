@@ -1,6 +1,7 @@
 package antoine.rythm;
 
 import java.util.Base64;
+import java.util.Optional;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -35,19 +36,24 @@ public class HtmlController {
 
 	@PostMapping("/setup-game")
 	public RedirectView postMethodName(
-			@RequestParam("beatmap-name") String beatmapName,
-			@RequestParam("note-spacing") int noteSpacing) {
-		String asBase64 = Base64.getEncoder().encodeToString(beatmapName.getBytes());
+			@RequestParam("beatmap-name") Optional<String> beatmapName,
+			@RequestParam("note-spacing") Optional<Integer> noteSpacing) {
 
-		String beatmapUrl = "/beatmap?encoded-beatmap-name=" + asBase64;
+		if (beatmapName.isEmpty() || noteSpacing.isEmpty()) {
+			return new RedirectView("/setup?error=form-elements-missing");
+		} else {
+			String asBase64 = Base64.getEncoder().encodeToString(beatmapName.get().getBytes());
 
-		String redirect = UriComponentsBuilder.newInstance()
-				.path("/game")
-				.queryParam("beatmap-url", beatmapUrl)
-				.queryParam("note-spacing", Integer.toString(noteSpacing))
-				.toUriString();
+			String beatmapUrl = "/beatmap?encoded-beatmap-name=" + asBase64;
 
-		return new RedirectView(redirect);
+			String redirect = UriComponentsBuilder.newInstance()
+					.path("/game")
+					.queryParam("beatmap-url", beatmapUrl)
+					.queryParam("note-spacing", Integer.toString(noteSpacing.get()))
+					.toUriString();
+
+			return new RedirectView(redirect);
+		}
 	}
 
 }
