@@ -1,4 +1,4 @@
-import { Optional } from './utils/optional';
+import { Optional } from '../utils/optional';
 
 const search = window.location.search;
 const urlParams = new URLSearchParams(search);

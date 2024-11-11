@@ -1,15 +1,15 @@
 import { HitResult } from 'osu-classes';
 import { BeatmapDecoder } from 'osu-parsers';
+import { AudioHandler } from './audio-handler';
 import { CanvasDisplayHandler } from './display/canvas-display-handler';
 import { HtmlDisplayHandler } from './display/html-display-handler';
 import { Gameloop } from './gameloop';
 import { HitsHandler } from './hits-handler';
 import { addEventListeners } from './inputs/inputs-handler';
-import { getParameter } from './parameters-handler';
 import { RatingEvaluator } from './rating-evaluator';
 import { Store } from './store';
 import { TimedEventsHandler } from './timed-events-handler';
-import { AudioHandler } from './audio-handler';
+import { getParameter } from './inputs/parameters-handler';
 
 const store = new Store({
 	a: 0,
@@ -64,8 +64,9 @@ try {
 	);
 
 	store.observers.push(ratingEvaluator);
+	store.observers.push(audioHandler);
 
-	addEventListeners(store);
+	addEventListeners(store, document.querySelector('#volume')!);
 
 	const gameloop = new Gameloop(canvasDisplayHandler, timedEventsHandler);
 	gameloop.loop();

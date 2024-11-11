@@ -1,9 +1,9 @@
 import { HoldableObject } from 'osu-parsers';
 import { HitsHandler } from '../hits-handler.js';
-import { getParameter } from '../parameters-handler.js';
 import { Store } from '../store.js';
 import { KeyState } from '../inputs/key-state.js';
 import { AudioHandler } from '../audio-handler.js';
+import { getParameter } from '../inputs/parameters-handler.js';
 
 export class CanvasDisplayHandler {
 	private readonly store: Store;

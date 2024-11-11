@@ -1,5 +1,17 @@
-export class AudioHandler {
+import { Observer } from './utils/observer-pattern';
+
+export type Volume = number;
+
+export class AudioHandler implements Observer<Volume> {
 	public constructor(private readonly audio: HTMLAudioElement) {}
+
+	update(modifiedData: Volume): void {
+		console.log(modifiedData);
+		
+		console.log('volume ' + modifiedData);
+
+		this.audio.volume = modifiedData;
+	}
 
 	public startSong(): void {
 		this.audio.play();
@@ -7,9 +19,5 @@ export class AudioHandler {
 
 	public time(): number {
 		return Math.round(this.audio.currentTime * 1000);
-	}
-
-	public setVolume(volume: number): void {
-		this.audio.volume = volume;
 	}
 }

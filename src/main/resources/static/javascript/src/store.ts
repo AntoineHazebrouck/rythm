@@ -3,13 +3,17 @@ import { UserHitResult } from './hits-handler';
 import { KeyState } from './inputs/key-state';
 import { KeyStatus } from './inputs/key-status';
 import { Observer, Sender } from './utils/observer-pattern';
+import { Volume } from './audio-handler';
 
-export class Store implements Sender<KeyStatus> {
+// type Sendable = KeyStatus | Volume;
+
+export class Store implements Sender<Volume>, Sender<KeyStatus> {
+	private volume: Volume;
 	private readonly keyStates: KeyStatus[];
 	private readonly keyToColumnMapping: Record<string, number>;
 	private readonly userHits: UserHitResult[];
 
-	public readonly observers: Observer<KeyStatus>[];
+	public readonly observers: Observer<Volume | KeyStatus>[];
 
 	public constructor(keyToColumnMapping: Record<string, number>) {
 		this.keyStates = [
@@ -23,10 +27,21 @@ export class Store implements Sender<KeyStatus> {
 		this.keyToColumnMapping = keyToColumnMapping;
 		this.userHits = [];
 		this.observers = [];
+		this.volume = 0;
 	}
 
-	notify(modifiedData: KeyStatus): void {
+	notify(modifiedData: number | KeyStatus): void {
 		this.observers.forEach((observer) => observer.update(modifiedData));
+	}
+
+
+	// notify(modifiedData: Sendable): void {
+	// 	this.observers.forEach((observer) => observer.update(modifiedData));
+	// }
+
+	public setVolume(volume: Volume) {
+		this.volume = volume;
+		this.notify(volume);
 	}
 
 	public getKeyStates(): KeyStatus[] {

@@ -6,19 +6,23 @@
 
 <body>
 	<header th:replace="~{../fragments/general.html :: header(activePage='Game')}"> </header>
+
+	<!-- everything is handled by javascript -->
 	<main class="container">
 		<div class="row">
-			<!-- handled by javascript -->
+			<label for="volume" class="form-label">Song volume</label>
+			<input id="volume" class="form-range" type="range" min="0.0" max="1.0" value="0.5" step="0.1">
+		</div>
+
+		<div class="row">
 			<div id="error-message"></div>
 		</div>
 
 		<div class="row">
-			<!-- handled by javascript -->
 			<div id="note-rating"></div>
 		</div>
 
 		<div class="row">
-			<!-- handled by javascript -->
 			<canvas class="card col mx-auto"></canvas>
 		</div>
 	</main>
