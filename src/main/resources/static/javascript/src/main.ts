@@ -3,12 +3,12 @@ import { CanvasDisplayHandler } from './display/canvas-display-handler';
 import { ErrorHandler } from './error-handler';
 import { Gameloop } from './gameloop';
 import { HitsHandler } from './hits-handler';
-import { addEventListeners } from './inputs-handler';
 import { getParameter } from './parameters-handler';
 import { Store } from './store';
 import { HtmlDisplayHandler } from './display/html-display-handler';
 import { TimedEventsHandler } from './timed-events-handler';
 import { RatingEvaluator } from './rating-evaluator';
+import { addEventListeners } from "./inputs/inputs-handler";
 
 const errorHandler = new ErrorHandler(
 	document.querySelector('#error-message')!
@@ -45,7 +45,7 @@ try {
 		store
 	);
 
-	const ratingEvaluator = new RatingEvaluator(htmlDisplayHandler, hitsHandler);
+	const ratingEvaluator = new RatingEvaluator(htmlDisplayHandler, hitsHandler, store);
 
 	const canvasDisplayHandler = new CanvasDisplayHandler(
 		store,

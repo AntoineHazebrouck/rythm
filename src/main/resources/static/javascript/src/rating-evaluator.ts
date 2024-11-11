@@ -1,41 +1,38 @@
-import { HitObject, HitResult } from 'osu-classes';
-import { HoldableObject } from 'osu-parsers';
+import { HitResult } from 'osu-classes';
 import { startSong, time } from './audio';
 import { HtmlDisplayHandler } from './display/html-display-handler';
-import { HitsHandler, UserHitResult } from './hits-handler';
-import { KeyState, ModificationType, Observer, Store } from './store';
+import { HitsHandler } from './hits-handler';
+import { KeyState } from './inputs/key-state';
+import { KeyStatus } from './inputs/key-status';
+import { Observer } from './utils/observer-pattern';
+import { Store } from './store';
 
-export class RatingEvaluator implements Observer<Store> {
-	private readonly htmlDisplayHandler: HtmlDisplayHandler;
-	private readonly hitsHandler: HitsHandler;
-
+export class RatingEvaluator implements Observer<KeyStatus> {
 	public constructor(
-		htmlDisplayHandler: HtmlDisplayHandler,
-		hitsHandler: HitsHandler
-	) {
-		this.htmlDisplayHandler = htmlDisplayHandler;
-		this.hitsHandler = hitsHandler;
-	}
+		private readonly htmlDisplayHandler: HtmlDisplayHandler,
+		private readonly hitsHandler: HitsHandler,
+		private readonly store: Store
+	) {}
 
-	public update(store: Store, modificationType: ModificationType): void {
-		if (modificationType === ModificationType.INPUTS) {
-			if (store.getKeyState(' ') === KeyState.PRESSED) {
-				startSong();
-			}
-			Object.entries(store.getKeyStates()).forEach((entry) => {
-				const [key, state] = entry;
-
-				this.hitsHandler
-					.getResultFor(state, time(), store.getColumnForKey(key))
-					.ifPresent((result) => {
-						if (result.rating !== HitResult.None) {
-							this.htmlDisplayHandler.displayRating(
-								result.rating
-							);
-							store.addUserHit(result);
-						}
-					});
-			});
+	update(modifiedData: KeyStatus): void {
+		if (
+			modifiedData.key === ' ' &&
+			modifiedData.state === KeyState.PRESSED
+		) {
+			startSong();
+		} else {
+			this.hitsHandler
+				.getResultFor(
+					modifiedData.state,
+					time(),
+					this.store.getColumnForKey(modifiedData.key)
+				)
+				.ifPresent((result) => {
+					if (result.rating !== HitResult.None) {
+						this.htmlDisplayHandler.displayRating(result.rating);
+						this.store.addUserHit(result);
+					}
+				});
 		}
 	}
 }

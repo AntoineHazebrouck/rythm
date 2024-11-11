@@ -2,7 +2,8 @@ import { HoldableObject } from 'osu-parsers';
 import { time } from '../audio.js';
 import { HitsHandler } from '../hits-handler.js';
 import { getParameter } from '../parameters-handler.js';
-import { KeyState, Store } from '../store.js';
+import { Store } from '../store.js';
+import { KeyState } from '../inputs/key-state.js';
 
 export class CanvasDisplayHandler {
 	private readonly store: Store;
@@ -36,13 +37,11 @@ export class CanvasDisplayHandler {
 		this.context.lineTo(this.canvas.width, 0);
 		this.context.stroke();
 
-		Object.entries(this.store.getKeyStates()).forEach((entry) => {
-			const [key, state] = entry;
-
-			if (state === KeyState.PRESSED) {
+		this.store.getKeyStates().forEach((status) => {
+			if (status.state === KeyState.PRESSED) {
 				this.context.fillStyle = 'red';
 				const laneX =
-					this.laneWidth() * this.store.getColumnForKey(key);
+					this.laneWidth() * this.store.getColumnForKey(status.key);
 
 				this.context.beginPath();
 				this.context.rect(laneX, 0, this.laneWidth(), 10);

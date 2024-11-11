@@ -1,4 +1,5 @@
-import { KeyState, Store } from './store.js';
+import { Store } from '../store.js';
+import { KeyState } from './key-state.js';
 
 // listeners send input states to the store, store is read by the timed events loop
 export function addEventListeners(store: Store) {

@@ -1,7 +1,8 @@
 import { Beatmap, HitObject, HitResult } from 'osu-classes';
 import { HoldableObject } from 'osu-parsers';
 import { time } from './audio';
-import { KeyState, Store } from './store';
+import { KeyState } from './inputs/key-state';
+import { Store } from './store';
 import { Optional } from './utils/optional';
 
 export class UserHitResult {
@@ -92,7 +93,7 @@ export class HitsHandler {
 		onColumn: number
 	): Optional<UserHitResult> {
 		console.log('called');
-		
+
 		// si le temps est dans un holdable alors Perfect
 		const holdable = this.holdables(onColumn).find(
 			(holdable) =>
