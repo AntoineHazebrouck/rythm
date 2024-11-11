@@ -6,10 +6,20 @@
 
 <body>
 	<header th:replace="~{../fragments/general.html :: header(activePage='Game')}"> </header>
-	<main>
-		<h1 id="error-message"></h1>
-		<h1 id="note-rating"></h1>
-		<canvas></canvas>
+	<main class="container">
+		<!-- <div class="row">
+			<div id="error-message" class="alert alert-danger col-4 m-3 mx-auto" role="alert"></div>
+		</div> TODO -->
+
+		<div class="row">
+			<div class="alert alert-success col-4 m-3 mx-auto" role="alert">
+				<h1 id="note-rating" class="text-center"></h1>
+			</div>
+		</div>
+
+		<div class="row">
+			<canvas class="card col mx-auto"></canvas>
+		</div>
 	</main>
 </body>
 
