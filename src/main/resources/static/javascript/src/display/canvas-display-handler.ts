@@ -86,14 +86,18 @@ export class CanvasDisplayHandler {
 					this.getDisplayedY(hit.endTime) -
 						this.getDisplayedY(hit.startTime)
 				);
-				this.context.fill();
 			} else {
-				this.context.lineTo(
-					laneX + this.laneWidth(),
-					this.getDisplayedY(hit.startTime)
-				);
-				this.context.stroke();
+				const start = this.getDisplayedY(hit.startTime - 5);
+				const end = this.getDisplayedY(hit.startTime + 5);
+				this.context.rect(
+					laneX,
+					start,
+					this.laneWidth(),
+					end - start
+				)
 			}
+			this.context.fill();
+
 		});
 	}
 }
