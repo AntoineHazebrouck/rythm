@@ -69,8 +69,6 @@ export class CanvasDisplayHandler {
 
 		this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-		this.drawNoteLimitLine();
-
 		this.hitsHandler.nextHits().forEach((hit) => {
 			this.context.beginPath();
 			const laneX =
@@ -89,15 +87,10 @@ export class CanvasDisplayHandler {
 			} else {
 				const start = this.getDisplayedY(hit.startTime - 5);
 				const end = this.getDisplayedY(hit.startTime + 5);
-				this.context.rect(
-					laneX,
-					start,
-					this.laneWidth(),
-					end - start
-				)
+				this.context.rect(laneX, start, this.laneWidth(), end - start);
 			}
 			this.context.fill();
-
 		});
+		this.drawNoteLimitLine();
 	}
 }
