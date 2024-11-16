@@ -16,12 +16,19 @@ export class HtmlDisplayHandler {
 			[HitResult.Miss]: 'alert-danger',
 		};
 		this.noteRating.innerHTML = `
-			<div class="alert ${
-				resultToAlertMapping[rating]
-					? resultToAlertMapping[rating]
-					: 'alert-secondary'
-			} col-4 m-3 mx-auto" role="alert">
-				<h1 class="text-center">${HitResult[rating]}</h1>
+			<div 
+				class="alert ${
+					resultToAlertMapping[rating]
+						? resultToAlertMapping[rating]
+						: 'alert-secondary'
+				} mx-auto my-0 px-4 py-2" 
+				role="alert"
+				style="width: fit-content"
+			>
+				<h3 
+					class="text-uppercase m-0"
+					style="width: fit-content"
+				>${HitResult[rating]}</h3>
 			</div>
 		`;
 	}
@@ -29,7 +36,7 @@ export class HtmlDisplayHandler {
 	public displayError(error: Error): void {
 		console.log(error);
 		this.error.innerHTML = `
-			<div class="alert alert-danger col-4 m-3 mx-auto" role="alert">${error.message}</div>
+			<div class="alert alert-danger mx-auto" role="alert">${error.message}</div>
 		`;
 	}
 }
