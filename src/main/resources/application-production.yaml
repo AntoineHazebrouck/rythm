@@ -1,0 +1,12 @@
+spring:
+    application.name: rythm
+    servlet.multipart:
+        max-file-size: 100MB
+        max-request-size: 100MB
+
+    datasource:
+        url: jdbc:postgresql://localhost:5432/rythm # TODO
+        username: postgres # TODO
+        password: postgres # TODO
+    jpa:
+        database-platform: org.hibernate.dialect.PostgreSQLDialect
