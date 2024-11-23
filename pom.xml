@@ -69,6 +69,8 @@
 			<resource>
 				<directory>src/main/resources</directory>
 				<excludes>
+					<exclude>**/src/**</exclude>
+					<exclude>**/dist/**</exclude>
 					<exclude>**/node_modules/**</exclude>
 				</excludes>
 			</resource>
