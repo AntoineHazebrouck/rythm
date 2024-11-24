@@ -1,4 +1,4 @@
-package antoine.rythm;
+package antoine.rythm.controllers;
 
 import java.util.Base64;
 import java.util.Optional;
@@ -7,34 +7,27 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import antoine.rythm.CurrentOsuArchiveService;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Controller
-public class HtmlController {
+@RequestMapping("/setup")
+class SetupController {
 	private final CurrentOsuArchiveService currentOsuArchiveService;
 
 	@GetMapping
-	public String index() {
-		return "index";
-	}
-
-	@GetMapping("/setup")
 	public String setup(Model model) {
 		model.addAttribute("beatmapsNames", currentOsuArchiveService.extractBeatmapsNames());
 		return "setup";
 	}
 
-	@GetMapping("/game")
-	public String game() {
-		return "game";
-	}
-
-	@PostMapping("/setup-game")
+	@PostMapping
 	public RedirectView postMethodName(
 			@RequestParam("beatmap-name") Optional<String> beatmapName,
 			@RequestParam("note-spacing") Optional<Integer> noteSpacing) {
@@ -55,5 +48,4 @@ public class HtmlController {
 			return new RedirectView(redirect);
 		}
 	}
-
 }
