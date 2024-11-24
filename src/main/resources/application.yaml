@@ -12,5 +12,5 @@ spring:
     jpa:
         defer-datasource-initialization: true
         show-sql: true
-        hibernate.ddl-auto: create # TODO maybe switch to UPDATE to keep last runs data
+        hibernate.ddl-auto: update
     h2.console.enabled: true
