@@ -35,3 +35,4 @@ build/
 node_modules
 bundle.js
 dist
+local-database
