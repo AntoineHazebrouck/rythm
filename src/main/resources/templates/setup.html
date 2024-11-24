@@ -7,34 +7,37 @@
 	<header th:replace="~{../fragments/general.html :: header(activePage='Setup')}"> </header>
 	<main class="container">
 
-			<div class="col-10 mx-auto card p-3">
-				<h1 class="text-center">Choose difficulty and settings</h1>
-				<br>
-				<form action="/setup" method="post">
-					<div class="col">
-						<div class="form-group p-3">
-							<div th:each="name: ${beatmapsNames}">
-								<input type="radio" name="beatmap-name" th:text="' ' + ${name}" th:value="${name}">
-								<br>
-							</div>
-						</div>
-						<div class="form-group p-3">
-							<label for="osu-archive">Notes spacing : </label>
-							<input name="note-spacing" id="note-spacing" type="number" value="2">
+		<div class="col-10 mx-auto card p-3">
+			<h1 class="text-center">Choose difficulty and settings</h1>
+			<br>
+			<form action="/setup" method="post">
+				<div class="col">
+					<div class="form-group p-3">
+						<div th:each="name: ${beatmapsNames}">
+							<input type="radio" name="beatmap-name" th:text="' ' + ${name}" th:value="${name}">
+							<br>
 						</div>
 					</div>
-
-					<div class="col text-center">
-						<button type="submit" class="btn btn-primary p-3">Start game</button>
+					<div class="form-group p-3">
+						<label for="osu-archive">Notes spacing : </label>
+						<input name="note-spacing" id="note-spacing" type="number" value="2">
 					</div>
-				</form>
-			</div>
-	
 
-			<div th:if="${param.error} and ${param.error[0]} == 'form-elements-missing'"
-				class="alert alert-danger col-4 m-3 mx-auto" role="alert">
-				Some elements are missing in the form !
-			</div>
+					<input type="hidden" name="encoded-archive-name" id="encoded-archive-name"
+						th:value="${encodedArchiveName}">
+				</div>
+
+				<div class="col text-center">
+					<button type="submit" class="btn btn-primary p-3">Start game</button>
+				</div>
+			</form>
+		</div>
+
+
+		<div th:if="${param.error} and ${param.error[0]} == 'form-elements-missing'"
+			class="alert alert-danger col-4 m-3 mx-auto" role="alert">
+			Some elements are missing in the form !
+		</div>
 
 	</main>
 </body>

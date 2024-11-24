@@ -25,13 +25,27 @@ const htmlDisplayHandler = new HtmlDisplayHandler(
 );
 htmlDisplayHandler.displayRating(HitResult.None);
 
-const audioHandler = new AudioHandler(new Audio('/audio'));
+const audioHandler = new AudioHandler(
+	new Audio(
+		`/game/audio?encoded-archive-name=${getParameter(
+			'encoded-archive-name'
+		).orElseThrow(
+			new Error('Could not read encoded-archive-name property')
+		)}`
+	)
+);
 
 try {
 	const osuMap = await fetch(
-		getParameter('beatmap-url').orElseThrow(
-			new Error('Could not read note-spacing property')
-		)
+		`/game/beatmap?encoded-archive-name=${getParameter(
+			'encoded-archive-name'
+		).orElseThrow(
+			new Error('Could not read encoded-archive-name property')
+		)}&encoded-beatmap-name=${getParameter(
+			'encoded-beatmap-name'
+		).orElseThrow(
+			new Error('Could not read encoded-beatmap-name property')
+		)}`
 	).then((response) => {
 		if (response.ok) return response.text();
 		else throw new Error(`HTTP ${response.status} for ${response.url}`);

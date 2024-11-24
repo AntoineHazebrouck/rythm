@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+
+<head th:replace="~{../fragments/general.html :: head(title='Archive selection')}"></head>
+
+<body>
+	<header th:replace="~{../fragments/general.html :: header(activePage='Archive selection')}"> </header>
+	<main class="container">
+
+			<div class="col-10 mx-auto card p-3">
+				<h1 class="text-center">Choose an osu archive</h1>
+				<br>
+				<form action="/archive-selection" method="post">
+					<div class="col">
+						<div class="form-group p-3">
+							<div th:each="name: ${archivesNames}">
+								<input type="radio" name="archive-name" th:text="' ' + ${name}" th:value="${name}">
+								<br>
+							</div>
+						</div>
+					</div>
+
+					<div class="col text-center">
+						<button type="submit" class="btn btn-primary p-3">Setup game</button>
+					</div>
+				</form>
+			</div>
+	</main>
+</body>
+
+</html>

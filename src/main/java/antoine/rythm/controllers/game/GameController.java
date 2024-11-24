@@ -1,4 +1,4 @@
-package antoine.rythm.controllers;
+package antoine.rythm.controllers.game;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -1,6 +1,6 @@
 package antoine.rythm.controllers;
 
-import java.util.Base64;
+import java.io.IOException;
 import java.util.Optional;
 
 import org.springframework.stereotype.Controller;
@@ -12,36 +12,43 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import antoine.rythm.CurrentOsuArchiveService;
+import antoine.rythm.services.OsuArchiveService;
+import antoine.rythm.services.UrlEncoderService;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Controller
 @RequestMapping("/setup")
 class SetupController {
-	private final CurrentOsuArchiveService currentOsuArchiveService;
+	private final OsuArchiveService currentOsuArchiveService;
+	private final UrlEncoderService urlEncoderService;
 
 	@GetMapping
-	public String setup(Model model) {
-		model.addAttribute("beatmapsNames", currentOsuArchiveService.extractBeatmapsNames());
+	public String setup(
+			@RequestParam("encoded-archive-name") String encodedArchiveName, // TODO handle error
+			Model model) throws IOException {
+		String decodedArchiveName = urlEncoderService.decode(encodedArchiveName);
+
+		model.addAttribute("encodedArchiveName", encodedArchiveName);
+		model.addAttribute("beatmapsNames", currentOsuArchiveService.extractBeatmapsNames(decodedArchiveName)
+				.orElseThrow(
+						() -> new IllegalArgumentException("file : %s was not found".formatted(decodedArchiveName))));
 		return "setup";
 	}
 
 	@PostMapping
 	public RedirectView postMethodName(
+			@RequestParam("encoded-archive-name") String encodedArchiveName,
 			@RequestParam("beatmap-name") Optional<String> beatmapName,
 			@RequestParam("note-spacing") Optional<Integer> noteSpacing) {
 
 		if (beatmapName.isEmpty() || noteSpacing.isEmpty()) {
 			return new RedirectView("/setup?error=form-elements-missing");
 		} else {
-			String asBase64 = Base64.getEncoder().encodeToString(beatmapName.get().getBytes());
-
-			String beatmapUrl = "/beatmap?encoded-beatmap-name=" + asBase64;
-
 			String redirect = UriComponentsBuilder.newInstance()
 					.path("/game")
-					.queryParam("beatmap-url", beatmapUrl)
+					.queryParam("encoded-archive-name", encodedArchiveName)
+					.queryParam("encoded-beatmap-name", urlEncoderService.encode(beatmapName.get()))
 					.queryParam("note-spacing", Integer.toString(noteSpacing.get()))
 					.toUriString();
 
