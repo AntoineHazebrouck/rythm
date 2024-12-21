@@ -1,11 +1,9 @@
 server:
     port: 443
     ssl:
+        certificate: classpath:certificates/lets-encrypt/fullchain.pem
+        certificate-private-key: classpath:certificates/lets-encrypt/privkey.pem
         enabled: true
-        key-store-type: PKCS12
-        key-store: classpath:keystore/baeldung.p12
-        key-store-password: 070903
-        key-alias: baeldung
 spring:
     application.name: rythm
     servlet.multipart:
