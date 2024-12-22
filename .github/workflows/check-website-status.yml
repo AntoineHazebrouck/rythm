@@ -1,9 +1,13 @@
 name: check-website-status
-on: [workflow_dispatch]
+on: 
+    workflow_dispatch:
+    schedule:
+        - cron: 0 22 * * *
+
 jobs:
-  check-website-status:
-    runs-on: self-hosted
-    steps:
-      - uses: actions/checkout@v2
-      - run: pip install requests
-      - run: python ./.github/scripts/check-website-status.py
+    check-website-status:
+        runs-on: self-hosted
+        steps:
+            - uses: actions/checkout@v2
+            - run: pip install requests
+            - run: python ./.github/scripts/check-website-status.py
