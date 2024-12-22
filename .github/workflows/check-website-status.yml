@@ -1,7 +1,9 @@
+name: check-website-status
 on: [workflow_dispatch]
 jobs:
   my-job:
     runs-on: self-hosted
     steps:
+      - uses: actions/checkout@v2
       - run: pip install requests
       - run: python ./scripts/check-website-status.py
