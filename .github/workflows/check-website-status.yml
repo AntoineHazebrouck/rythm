@@ -1,0 +1,7 @@
+on: [workflow_dispatch]
+jobs:
+  my-job:
+    runs-on: self-hosted
+    steps:
+      - run: pip install requests
+      - run: python ../scripts/check-website-status.py
