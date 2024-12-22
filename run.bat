@@ -1,2 +1,5 @@
-CALL npm --prefix src/main/resources/static/javascript run build
+CD src/main/resources/static/javascript
+CALL npm install
+CALL npm run build
+CD ../../../../..
 CALL mvn clean spring-boot:run
