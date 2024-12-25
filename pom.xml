@@ -12,19 +12,21 @@
 	<version>0.0.3-SNAPSHOT</version>
 	<name>rythm</name>
 	<description>Demo project for Spring Boot</description>
-	<url />
+	<url>https://www.antoinehazebrouck.com</url>
 	<licenses>
 		<license />
 	</licenses>
 	<developers>
 		<developer />
 	</developers>
+
 	<scm>
 		<connection>scm:git:https://github.com/AntoineHazebrouck/rythm</connection>
 		<developerConnection>scm:git:https://github.com/AntoineHazebrouck/rythm</developerConnection>
 		<tag></tag>
 		<url>https://github.com/AntoineHazebrouck/rythm</url>
 	</scm>
+
 	<properties>
 		<java.version>17</java.version>
 	</properties>
