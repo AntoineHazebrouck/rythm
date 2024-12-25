@@ -16,6 +16,13 @@
 ./package.bat
 ```
 
+## Release new version
+
+```shell
+mvn release:prepare
+mvn release:perform
+```
+
 ## Fetch lets-encrypt certifications (for HTTPS)
 
 ```shell
