@@ -6,6 +6,12 @@ server:
         enabled: true
 spring:
     application.name: rythm
+
+    security.oauth2.client.registration:
+        google:
+            client-id: 584372132949-stsv429904cqpdfkhg2842mpnd5h3hmm.apps.googleusercontent.com
+            client-secret: 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
+
     servlet.multipart:
         max-file-size: 100MB
         max-request-size: 100MB
