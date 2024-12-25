@@ -1,0 +1,10 @@
+name: maven-release
+on: 
+    workflow_dispatch:
+
+jobs:
+    maven-release:
+        runs-on: self-hosted
+        steps:
+            - uses: actions/checkout@v2
+            - run: ./mvnw --batch-mode release:prepare
