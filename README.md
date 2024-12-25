@@ -4,10 +4,16 @@
 
 [![check-website-status](https://github.com/AntoineHazebrouck/rythm/actions/workflows/check-website-status.yml/badge.svg)](https://github.com/AntoineHazebrouck/rythm/actions/workflows/check-website-status.yml)
 
-## Run
+## Compile and run
 
 ```shell
 ./run.bat
+```
+
+## Package application
+
+```shell
+./package.bat
 ```
 
 ## Fetch lets-encrypt certifications (for HTTPS)
