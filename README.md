@@ -32,5 +32,8 @@ docker run -it --rm --name certbot -p 80:80 -v "C:/Users/Jez/Desktop/certs:/etc/
 
 ## TODO
 
-logout bouton
+photo utilisateur connecté
 
+parametres en haut a droite
+
+les utilisateurs likent des archives

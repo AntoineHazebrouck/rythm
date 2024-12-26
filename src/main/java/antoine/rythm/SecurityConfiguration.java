@@ -21,6 +21,6 @@ class SecurityConfiguration {
 						.requestMatchers("/h2-console/**").permitAll()
 						.anyRequest().authenticated())
 				.headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()))
-				.csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"));
+				.csrf(csrf -> csrf.disable());
 	}
 }
