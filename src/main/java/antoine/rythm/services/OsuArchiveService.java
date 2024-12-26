@@ -5,7 +5,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.zip.ZipEntry;
@@ -78,27 +77,11 @@ public class OsuArchiveService {
 		}
 	}
 
-	// public void setCurrentArchive(MultipartFile osuArchive) throws IOException {
-	// File temp = File.createTempFile("temp", ".osz");
-	// osuArchive.transferTo(temp);
-
-	// this.zip = new ZipFile(temp);
-	// }
-
 	private static ZipEntry getLargestEntry(ZipFile zip) {
-		// Set<ZipEntry> entries = new HashSet<>();
-		// zip.entries().asIterator().forEachRemaining(entry -> {
-		// entries.add(entry);
-		// });
-
-		return zip.stream().sorted(new Comparator<ZipEntry>() {
-
-			@Override
-			public int compare(ZipEntry left, ZipEntry right) {
-				return Long.compare(right.getSize(), left.getSize());
-			}
-
-		}).findFirst().get();
+		return zip.stream()
+				.sorted((left, right) -> Long.compare(right.getSize(), left.getSize()))
+				.findFirst()
+				.get();
 	}
 
 	private static ZipFile asZipFile(OsuArchiveEntity osuArchiveEntity) throws IOException {
