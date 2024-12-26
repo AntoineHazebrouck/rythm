@@ -11,12 +11,24 @@
 
 <body>
 	<header class="container p-3" th:fragment="header">
-		<ul class="nav nav-pills justify-content-center">
-			<li class="nav-item"><a href="/" class="nav-link" th:classappend="${activePage} == 'Home' ? 'active' : ''">Home</a></li>
-			<li class="nav-item"><a href="/archive-selection" class="nav-link" th:classappend="${activePage} == 'Archive selection' ? 'active' : ''">Archive selection</a></li>
-			<li class="nav-item"><a href="/setup" class="nav-link" th:classappend="${activePage} == 'Setup' ? 'active' : ''">Setup</a></li>
-			<li class="nav-item"><a href="/game" class="nav-link" th:classappend="${activePage} == 'Game' ? 'active' : ''">Game</a></li>
-		  </ul>
+		<div class="row">
+			<div class="col-2 ms-auto">
+				<a href="/logout" class="btn btn-primary">Logout</a>
+			</div>
+		</div>
+
+		<div class="row">
+			<ul class="nav nav-pills justify-content-center">
+				<li class="nav-item"><a href="/" class="nav-link"
+						th:classappend="${activePage} == 'Home' ? 'active' : ''">Home</a></li>
+				<li class="nav-item"><a href="/archive-selection" class="nav-link"
+						th:classappend="${activePage} == 'Archive selection' ? 'active' : ''">Archive selection</a></li>
+				<li class="nav-item"><a href="/setup" class="nav-link"
+						th:classappend="${activePage} == 'Setup' ? 'active' : ''">Setup</a></li>
+				<li class="nav-item"><a href="/game" class="nav-link"
+						th:classappend="${activePage} == 'Game' ? 'active' : ''">Game</a></li>
+			</ul>
+		</div>
 	</header>
 </body>
 
