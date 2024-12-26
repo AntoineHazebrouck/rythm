@@ -4,7 +4,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.event.AuthenticationSuccessEvent;
-import org.springframework.security.oauth2.core.OAuth2AuthenticatedPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import antoine.rythm.entities.UserEntity;
 import antoine.rythm.services.UserService;
@@ -22,9 +22,9 @@ class UserRegistration {
 		return (AuthenticationSuccessEvent event) -> {
 			log.info("user authentication : {}", event);
 
-			var principal = (OAuth2AuthenticatedPrincipal) event.getAuthentication().getPrincipal();
+			var principal = (OAuth2User) event.getAuthentication().getPrincipal();
 
-			if (!userService.existsById(principal.getAttribute("email"))) {
+			if (!userService.exists(principal)) {
 				UserEntity user = new UserEntity();
 				user.setEmail(principal.getAttribute("email"));
 				user.setNotesSpacing(1);

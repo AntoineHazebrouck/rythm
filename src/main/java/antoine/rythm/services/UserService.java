@@ -21,7 +21,7 @@ public class UserService {
 		return userRepository.save(user);
 	}
 
-	public boolean existsById(String email) {
-		return userRepository.existsById(email);
+	public boolean exists(OAuth2User principal) {
+		return userRepository.existsById(principal.getAttribute("email"));
 	}
 }
