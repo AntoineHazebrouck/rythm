@@ -29,3 +29,8 @@ docker run -it --rm --name certbot -p 80:80 -v "C:/Users/Jez/Desktop/certs:/etc/
 ## Google OAuth2
 
 [https://console.cloud.google.com/auth/overview?inv=1&invt=AblGng&project=antoinehazebrouck&supportedpurview=project](https://console.cloud.google.com/auth/overview?inv=1&invt=AblGng&project=antoinehazebrouck&supportedpurview=project)
+
+## TODO
+
+logout bouton
+
