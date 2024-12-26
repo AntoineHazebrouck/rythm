@@ -12,8 +12,8 @@ import java.util.zip.ZipFile;
 
 import org.springframework.stereotype.Service;
 
-import antoine.rythm.Audio;
 import antoine.rythm.entities.OsuArchiveEntity;
+import antoine.rythm.pojos.Audio;
 import antoine.rythm.repositories.OsuArchiveRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -85,7 +85,7 @@ public class OsuArchiveService {
 	}
 
 	private static ZipFile asZipFile(OsuArchiveEntity osuArchiveEntity) throws IOException {
-		File temp = File.createTempFile(osuArchiveEntity.getName(), ".osz");
+		File temp = File.createTempFile(osuArchiveEntity.getArchiveFileName(), ".osz");
 		try (OutputStream outputStream = new FileOutputStream(temp)) {
 			outputStream.write(osuArchiveEntity.getArchive());
 

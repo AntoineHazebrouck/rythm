@@ -25,7 +25,7 @@ class ArchiveSelection {
 		model.addAttribute(
 				"archivesNames",
 				osuArchiveService.findAll().stream()
-						.map(archive -> archive.getName())
+						.map(archive -> archive.getArchiveFileName())
 						.toList());
 		return "archive-selection";
 	}

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import antoine.rythm.Audio;
+import antoine.rythm.pojos.Audio;
 import antoine.rythm.services.OsuArchiveService;
 import antoine.rythm.services.UrlEncoderService;
 import lombok.RequiredArgsConstructor;

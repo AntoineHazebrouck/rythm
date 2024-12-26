@@ -1,4 +1,4 @@
-package antoine.rythm;
+package antoine.rythm.pojos;
 
 import lombok.Data;
 
