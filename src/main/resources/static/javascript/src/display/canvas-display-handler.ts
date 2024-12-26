@@ -57,8 +57,8 @@ export class CanvasDisplayHandler {
 
 	private getDisplayedY(actualY: number): number {
 		const spacingRatio = Number(
-			getParameter('note-spacing').orElseThrow(
-				new Error('Could not read note-spacing property')
+			getParameter('notes-spacing').orElseThrow(
+				new Error('Could not read notes-spacing property')
 			)
 		);
 		return (actualY - this.audioHandler.time()) / spacingRatio;

@@ -11,18 +11,19 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.view.RedirectView;
 
 import antoine.rythm.entities.UserEntity;
-import antoine.rythm.repositories.UserRepository;
+import antoine.rythm.services.UserService;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Controller
 @RequestMapping("/user/settings")
 class UserSettingsController {
-	private final UserRepository userRepository;
+	// private final UserRepository userRepository;
+	private final UserService userService;
 
 	@GetMapping
 	public String getMethodName(@AuthenticationPrincipal OAuth2User principal, Model model) {
-		UserEntity user = asUserEntity(principal);
+		UserEntity user = userService.asUserEntity(principal);
 
 		model.addAttribute("notesSpacing", user.getNotesSpacing());
 
@@ -33,17 +34,12 @@ class UserSettingsController {
 	public RedirectView postMethodName(
 			@RequestParam("notes-spacing") int notesSpacing,
 			@AuthenticationPrincipal OAuth2User principal) {
-		UserEntity user = asUserEntity(principal);
+		UserEntity user = userService.asUserEntity(principal);
 
 		user.setNotesSpacing(notesSpacing);
 
-		userRepository.save(user);
+		userService.save(user);
 
 		return new RedirectView("/");
-	}
-
-	private UserEntity asUserEntity(OAuth2User principal) {
-		return userRepository.findById(principal.getAttribute("email"))
-				.orElseThrow(() -> new IllegalArgumentException("user was not found"));
 	}
 }

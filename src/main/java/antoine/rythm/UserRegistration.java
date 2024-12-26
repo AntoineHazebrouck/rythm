@@ -7,7 +7,7 @@ import org.springframework.security.authentication.event.AuthenticationSuccessEv
 import org.springframework.security.oauth2.core.OAuth2AuthenticatedPrincipal;
 
 import antoine.rythm.entities.UserEntity;
-import antoine.rythm.repositories.UserRepository;
+import antoine.rythm.services.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
@@ -15,7 +15,7 @@ import lombok.extern.log4j.Log4j2;
 @RequiredArgsConstructor
 @Configuration
 class UserRegistration {
-	private final UserRepository userRepository;
+	private final UserService userService;
 
 	@Bean
 	ApplicationListener<AuthenticationSuccessEvent> registerAuthenticatedUser() {
@@ -24,9 +24,12 @@ class UserRegistration {
 
 			var principal = (OAuth2AuthenticatedPrincipal) event.getAuthentication().getPrincipal();
 
-			UserEntity user = new UserEntity();
-			user.setEmail(principal.getAttribute("email"));
-			userRepository.save(user);
+			if (!userService.existsById(principal.getAttribute("email"))) {
+				UserEntity user = new UserEntity();
+				user.setEmail(principal.getAttribute("email"));
+				user.setNotesSpacing(1);
+				userService.save(user);
+			}
 		};
 	}
 }
