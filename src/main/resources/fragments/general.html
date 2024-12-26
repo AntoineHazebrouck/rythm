@@ -6,14 +6,20 @@
 	<meta http-equiv='X-UA-Compatible' content='IE=edge'>
 	<title th:text="${title}"></title>
 	<meta name='viewport' content='width=device-width, initial-scale=1'>
-	<link rel='stylesheet' type='text/css' media='screen' href='css/bootstrap.css'>
+	<link rel='stylesheet' type='text/css' media='screen' href='/css/bootstrap.css'>
 </head>
 
 <body>
 	<header class="container p-3" th:fragment="header">
 		<div class="row">
-			<div class="col-2 ms-auto">
-				<a href="/logout" class="btn btn-primary">Logout</a>
+			<div class="col-4 ms-auto">
+
+				<ul class="nav nav-pills justify-content-center">
+					<li class="nav-item"><a href="/user/settings" class="nav-link"
+							th:classappend="${activePage} == 'Settings' ? 'active' : ''">Settings</a></li>
+					<li class="nav-item"><a href="/logout" class="nav-link">Logout</a>
+					</li>
+				</ul>
 			</div>
 		</div>
 

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{../fragments/general.html :: head(title='Settings')}"></head>
+
+<body>
+	<header th:replace="~{../fragments/general.html :: header(activePage='Settings')}"> </header>
+	<main class="container">
+
+		<div class="col-6 mx-auto card text-center p-3">
+			<h1>Settings</h1>
+			<br>
+			<form action="/user/settings" method="post">
+				<div class="form-group p-3">
+					<label for="notes-spacing">Notes spacing : </label>
+					<input name="notes-spacing" id="notes-spacing" type="number" th:value="${notesSpacing}">
+				</div>
+				<button type="submit" class="btn btn-primary p-3">Save</button>
+			</form>
+		</div>
+
+	</main>
+</body>
+
+</html>
