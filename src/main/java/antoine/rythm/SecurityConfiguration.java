@@ -11,14 +11,16 @@ class SecurityConfiguration {
 
 	@Bean
 	SecurityFilterChain configure(HttpSecurity http) throws Exception {
-		http
-				.authorizeHttpRequests(
-						requests -> requests
-								.requestMatchers("/h2-console/**").permitAll()
-								.anyRequest().authenticated())
-				.headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()))
-				.csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"))
-				.oauth2Login(Customizer.withDefaults());
+		addH2Security(http).oauth2Login(Customizer.withDefaults());
 		return http.build();
+	}
+
+	private HttpSecurity addH2Security(HttpSecurity http) throws Exception {
+		return http
+				.authorizeHttpRequests(requests -> requests
+						.requestMatchers("/h2-console/**").permitAll()
+						.anyRequest().authenticated())
+				.headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()))
+				.csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"));
 	}
 }
