@@ -7,18 +7,25 @@
 	<header th:replace="~{../fragments/general.html :: header(activePage='Home')}"> </header>
 	<main class="container">
 
-		<div class="col-6 mx-auto card text-center p-3">
-			<h1>Select an osu archive</h1>
-			<br>
-			<form action="/load-osu-archive" method="post" enctype="multipart/form-data">
-				<div class="form-group p-3">
-					<label for="osu-archive">OSU archive file : </label>
-					<input class="form-control-file" name="osu-archive" id="osu-archive" type="file" accept=".osz" />
-				</div>
-				<button type="submit" class="btn btn-primary p-3">Load OSU archive</button>
-			</form>
-		</div>
+		<section id="archive-upload">
+			<div class="col-6 mx-auto card text-center p-3">
+				<form action="/load-osu-archive" method="post" enctype="multipart/form-data">
 
+					<div class="row">
+						<div class="col">
+							<input class="form-control" type="file" id="osu-archive" name="osu-archive">
+						</div>
+						<div class="col-3">
+							<button type="submit" class="btn btn-primary p-2">Upload</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</section>
+
+		<section id="archive-selection">
+
+		</section>
 	</main>
 </body>
 
