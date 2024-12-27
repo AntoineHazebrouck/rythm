@@ -25,8 +25,4 @@ public class OsuArchiveEntity {
 
 	@OneToMany(cascade = CascadeType.ALL)
 	private Set<OsuBeatmapEntity> beatmaps;
-
-	@Deprecated
-	@Lob
-	private byte[] archive;
 }

@@ -1,7 +1,7 @@
 package antoine.rythm.controllers.game;
 
 import java.io.IOException;
-import java.util.function.Supplier;
+import java.util.Objects;
 
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.MediaType;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import antoine.rythm.pojos.Audio;
+import antoine.rythm.entities.OsuArchiveEntity;
 import antoine.rythm.services.OsuArchiveService;
 import antoine.rythm.services.UrlEncoderService;
 import lombok.RequiredArgsConstructor;
@@ -21,22 +21,19 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/game")
 class GameFileController {
-	private final OsuArchiveService currentOsuArchiveService;
+	private final OsuArchiveService osuArchiveService;
 	private final UrlEncoderService urlEncoderService;
-
-	private static Supplier<IllegalArgumentException> archiveNotFound(String file) {
-		return () -> new IllegalArgumentException("archive : %s was not found".formatted(file));
-	}
 
 	@GetMapping(path = "/audio")
 	public ResponseEntity<ByteArrayResource> audio(
 			@RequestParam("encoded-archive-name") String encodedArchiveName) throws IOException {
 		String decodedArchiveName = urlEncoderService.decode(encodedArchiveName);
-		Audio audio = currentOsuArchiveService.extractAudio(decodedArchiveName)
-				.orElseThrow(archiveNotFound(decodedArchiveName));
+
+		OsuArchiveEntity archive = osuArchiveService.findById(decodedArchiveName)
+				.orElseThrow();
 		return ResponseEntity.ok()
-				.contentType(MediaType.asMediaType(MimeType.valueOf("audio/" + audio.getFormat())))
-				.body(new ByteArrayResource(audio.getData()));
+				.contentType(MediaType.asMediaType(MimeType.valueOf("audio/" + archive.getAudioFormat())))
+				.body(new ByteArrayResource(archive.getAudio()));
 	}
 
 	@GetMapping(path = "/beatmap")
@@ -44,11 +41,21 @@ class GameFileController {
 			@RequestParam("encoded-archive-name") String encodedArchiveName,
 			@RequestParam("encoded-beatmap-name") String encodedBeatmapName) throws IOException {
 		String decodedArchiveName = urlEncoderService.decode(encodedArchiveName);
+		String decodedBeatmapName = urlEncoderService.decode(encodedBeatmapName);
 
-		String beatmapContent = currentOsuArchiveService.extractBeatmapContent(
-				decodedArchiveName,
-				urlEncoderService.decode(encodedBeatmapName))
-				.orElseThrow(archiveNotFound(decodedArchiveName));
+		OsuArchiveEntity archive = osuArchiveService.findById(decodedArchiveName)
+				.orElseThrow();
+
+		String beatmapContent = archive.getBeatmaps().stream()
+				.filter(beatmap -> Objects.equals(beatmap.getBeatmapFileName(), decodedBeatmapName))
+				.findFirst()
+				.map(beatmap -> beatmap.getBeatmapContent())
+				.orElseThrow();
+
+		// osuArchiveService.extractBeatmapContent(
+		// decodedArchiveName,
+		// urlEncoderService.decode(encodedBeatmapName))
+		// .orElseThrow();
 
 		return ResponseEntity.ok()
 				.contentType(MediaType.TEXT_PLAIN)

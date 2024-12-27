@@ -7,12 +7,16 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import antoine.rythm.entities.OsuArchiveEntity;
+import antoine.rythm.entities.OsuBeatmapEntity;
 import antoine.rythm.pojos.Audio;
 import antoine.rythm.repositories.OsuArchiveRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +25,28 @@ import lombok.RequiredArgsConstructor;
 @Service
 public class OsuArchiveService {
 	private final OsuArchiveRepository repository;
+
+	public OsuArchiveEntity save(MultipartFile osuArchive) throws IOException {
+
+		String fileName = osuArchive.getOriginalFilename();
+
+		OsuArchiveEntity archive = new OsuArchiveEntity();
+		archive.setArchiveFileName(fileName);
+
+		archive.setCode(fileName.substring(0, 7));
+
+		String withoutCode = fileName.substring(7, fileName.length() - 4);
+		archive.setArtist(withoutCode.split(" - ")[0]);
+		archive.setSong(withoutCode.split(" - ")[1]);
+
+		Audio audio = extractAudio(fileName, osuArchive.getBytes());
+		archive.setAudio(audio.getData());
+		archive.setAudioFormat(audio.getFormat());
+
+		archive.setBeatmaps(extractBeatmaps(fileName, osuArchive.getBytes()));
+
+		return save(archive);
+	}
 
 	public OsuArchiveEntity save(OsuArchiveEntity entity) {
 		repository.delete(entity);
@@ -31,49 +57,16 @@ public class OsuArchiveService {
 		return repository.findAll();
 	}
 
-	public Optional<Audio> extractAudio(String fileName) throws IOException {
-		Optional<OsuArchiveEntity> archive = repository.findById(fileName);
-		if (archive.isEmpty()) {
-			return Optional.empty();
-		} else {
-			ZipFile zip = asZipFile(archive.get());
-
-			ZipEntry audio = getLargestEntry(zip);
-			InputStream stream = zip.getInputStream(audio);
-			String[] split = audio.getName().split("\\.");
-			String format = split[split.length - 1];
-
-			return Optional.of(new Audio(stream.readAllBytes(), format));
-		}
-
+	public Optional<OsuArchiveEntity> findById(String archiveFileName) {
+		return repository.findById(archiveFileName);
 	}
 
-	public Optional<String> extractBeatmapContent(String archiveName, String beatmapName) throws IOException {
-		Optional<OsuArchiveEntity> archive = repository.findById(archiveName);
-		if (archive.isEmpty()) {
-			return Optional.empty();
-		} else {
-			ZipFile zip = asZipFile(archive.get());
+	private static ZipFile asZipFile(String fileName, byte[] archive) throws IOException {
+		File temp = File.createTempFile(fileName, ".osz");
+		try (OutputStream outputStream = new FileOutputStream(temp)) {
+			outputStream.write(archive);
 
-			InputStream stream = zip.getInputStream(zip.getEntry(beatmapName));
-			return Optional.of(new String(stream.readAllBytes()));
-		}
-	}
-
-	public Optional<List<String>> extractBeatmapsNames(String archiveName) throws IOException {
-		Optional<OsuArchiveEntity> archive = repository.findById(archiveName);
-
-		if (archive.isEmpty()) {
-			return Optional.empty();
-		} else {
-			ZipFile zip = asZipFile(archive.get());
-
-			return Optional.of(zip.stream()
-					.map(entry -> entry.getName())
-					.filter(name -> name.endsWith(".osu"))
-					.distinct()
-					.sorted()
-					.toList());
+			return new ZipFile(temp);
 		}
 	}
 
@@ -84,12 +77,40 @@ public class OsuArchiveService {
 				.get();
 	}
 
-	private static ZipFile asZipFile(OsuArchiveEntity osuArchiveEntity) throws IOException {
-		File temp = File.createTempFile(osuArchiveEntity.getArchiveFileName(), ".osz");
-		try (OutputStream outputStream = new FileOutputStream(temp)) {
-			outputStream.write(osuArchiveEntity.getArchive());
+	private static Audio extractAudio(String fileName, byte[] archive) throws IOException {
+		ZipFile zip = asZipFile(fileName, archive);
 
-			return new ZipFile(temp);
+		ZipEntry audio = getLargestEntry(zip);
+		InputStream stream = zip.getInputStream(audio);
+		String[] split = audio.getName().split("\\.");
+		String format = split[split.length - 1];
+
+		return new Audio(stream.readAllBytes(), format);
+	}
+
+	private static Set<OsuBeatmapEntity> extractBeatmaps(String fileName, byte[] archive) throws IOException {
+		ZipFile zip = asZipFile(fileName, archive);
+
+		return zip.stream()
+				.map(entry -> entry.getName())
+				.filter(name -> name.endsWith(".osu"))
+				.distinct()
+				.sorted()
+				.map(name -> {
+					OsuBeatmapEntity beatmap = new OsuBeatmapEntity();
+					beatmap.setBeatmapFileName(name);
+					beatmap.setBeatmapContent(content(zip, name));
+					return beatmap;
+				})
+				.collect(Collectors.toSet());
+
+	}
+
+	private static String content(ZipFile zip, String beatmapName) {
+		try (InputStream stream = zip.getInputStream(zip.getEntry(beatmapName))) {
+			return new String(stream.readAllBytes());
+		} catch (IOException e) {
+			throw new RuntimeException(e);
 		}
 	}
 }

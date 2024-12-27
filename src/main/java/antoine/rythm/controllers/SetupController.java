@@ -23,7 +23,7 @@ import lombok.RequiredArgsConstructor;
 @Controller
 @RequestMapping("/setup")
 class SetupController {
-	private final OsuArchiveService currentOsuArchiveService;
+	private final OsuArchiveService osuArchiveService;
 	private final UrlEncoderService urlEncoderService;
 	private final UserService userService;
 
@@ -34,9 +34,12 @@ class SetupController {
 		String decodedArchiveName = urlEncoderService.decode(encodedArchiveName);
 
 		model.addAttribute("encodedArchiveName", encodedArchiveName);
-		model.addAttribute("beatmapsNames", currentOsuArchiveService.extractBeatmapsNames(decodedArchiveName)
-				.orElseThrow(
-						() -> new IllegalArgumentException("file : %s was not found".formatted(decodedArchiveName))));
+		model.addAttribute(
+				"beatmapsNames",
+				osuArchiveService.findById(decodedArchiveName)
+						.map(archive -> archive.getBeatmaps().stream()
+								.map(beatmap -> beatmap.getBeatmapFileName()))
+						.orElseThrow());
 		return "setup";
 	}
 
