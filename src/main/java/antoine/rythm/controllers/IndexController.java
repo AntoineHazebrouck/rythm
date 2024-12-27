@@ -3,6 +3,7 @@ package antoine.rythm.controllers;
 import java.io.IOException;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,7 +19,14 @@ class IndexController {
 	private final OsuArchiveService osuArchiveService;
 
 	@GetMapping
-	public String index() {
+	public String index(Model model) {
+
+		model.addAttribute(
+				"archivesNames",
+				osuArchiveService.findAll().stream()
+						.map(archive -> archive.getArchiveFileName())
+						.toList());
+
 		return "index";
 	}
 
