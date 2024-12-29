@@ -12,7 +12,7 @@
 <body>
 	<header class="container p-3" th:fragment="header">
 		<div class="row">
-			<div class="col-4 ms-auto">
+			<div class="col-2 ms-auto">
 
 				<ul class="nav nav-pills justify-content-center">
 					<li class="nav-item"><a href="/user/settings" class="nav-link"
@@ -20,6 +20,9 @@
 					<li class="nav-item"><a href="/logout" class="nav-link">Logout</a>
 					</li>
 				</ul>
+			</div>
+			<div class="col-2">
+				<img th:src="${principal.getAttribute('picture')}" class="img-thumbnail" alt="profile-picture">
 			</div>
 		</div>
 

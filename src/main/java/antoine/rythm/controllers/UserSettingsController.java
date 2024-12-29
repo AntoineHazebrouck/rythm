@@ -18,7 +18,6 @@ import lombok.RequiredArgsConstructor;
 @Controller
 @RequestMapping("/user/settings")
 class UserSettingsController {
-	// private final UserRepository userRepository;
 	private final UserService userService;
 
 	@GetMapping
