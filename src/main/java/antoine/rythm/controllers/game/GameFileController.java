@@ -26,10 +26,9 @@ class GameFileController {
 
 	@GetMapping(path = "/audio")
 	public ResponseEntity<ByteArrayResource> audio(
-			@RequestParam("encoded-archive-name") String encodedArchiveName) throws IOException {
-		String decodedArchiveName = urlEncoderService.decode(encodedArchiveName);
+			@RequestParam("archive-code") String archiveCode) throws IOException {
 
-		OsuArchiveEntity archive = osuArchiveService.findById(decodedArchiveName)
+		OsuArchiveEntity archive = osuArchiveService.findByCode(archiveCode)
 				.orElseThrow();
 		return ResponseEntity.ok()
 				.contentType(MediaType.asMediaType(MimeType.valueOf("audio/" + archive.getAudioFormat())))
@@ -38,12 +37,11 @@ class GameFileController {
 
 	@GetMapping(path = "/beatmap")
 	public ResponseEntity<String> beatmap(
-			@RequestParam("encoded-archive-name") String encodedArchiveName,
+			@RequestParam("archive-code") String archiveCode,
 			@RequestParam("encoded-beatmap-name") String encodedBeatmapName) throws IOException {
-		String decodedArchiveName = urlEncoderService.decode(encodedArchiveName);
 		String decodedBeatmapName = urlEncoderService.decode(encodedBeatmapName);
 
-		OsuArchiveEntity archive = osuArchiveService.findById(decodedArchiveName)
+		OsuArchiveEntity archive = osuArchiveService.findByCode(archiveCode)
 				.orElseThrow();
 
 		String beatmapContent = archive.getBeatmaps().stream()
@@ -51,11 +49,6 @@ class GameFileController {
 				.findFirst()
 				.map(beatmap -> beatmap.getBeatmapContent())
 				.orElseThrow();
-
-		// osuArchiveService.extractBeatmapContent(
-		// decodedArchiveName,
-		// urlEncoderService.decode(encodedBeatmapName))
-		// .orElseThrow();
 
 		return ResponseEntity.ok()
 				.contentType(MediaType.TEXT_PLAIN)

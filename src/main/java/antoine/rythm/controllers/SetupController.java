@@ -41,16 +41,16 @@ class SetupController {
 
 	@PostMapping
 	public RedirectView postMethodName(
-			@RequestParam("encoded-archive-name") String encodedArchiveName,
+			@RequestParam("archive-code") Optional<String> archiveCode,
 			@RequestParam("beatmap-name") Optional<String> beatmapName,
 			@AuthenticationPrincipal OAuth2User principal) {
 
-		if (beatmapName.isEmpty()) {
+		if (beatmapName.isEmpty() || archiveCode.isEmpty()) {
 			return new RedirectView("/setup?error=form-elements-missing");
 		} else {
 			String redirect = UriComponentsBuilder.newInstance()
 					.path("/game")
-					.queryParam("encoded-archive-name", encodedArchiveName)
+					.queryParam("archive-code", archiveCode.get())
 					.queryParam("encoded-beatmap-name", urlEncoderService.encode(beatmapName.get()))
 					.queryParam("notes-spacing",
 							Integer.toString(userService.asUserEntity(principal).getNotesSpacing()))

@@ -27,20 +27,20 @@ htmlDisplayHandler.displayRating(HitResult.None);
 
 const audioHandler = new AudioHandler(
 	new Audio(
-		`/game/audio?encoded-archive-name=${getParameter(
-			'encoded-archive-name'
+		`/game/audio?archive-code=${getParameter(
+			'archive-code'
 		).orElseThrow(
-			new Error('Could not read encoded-archive-name property')
+			new Error('Could not read archive-code property')
 		)}`
 	)
 );
 
 try {
 	const osuMap = await fetch(
-		`/game/beatmap?encoded-archive-name=${getParameter(
-			'encoded-archive-name'
+		`/game/beatmap?archive-code=${getParameter(
+			'archive-code'
 		).orElseThrow(
-			new Error('Could not read encoded-archive-name property')
+			new Error('Could not read archive-code property')
 		)}&encoded-beatmap-name=${getParameter(
 			'encoded-beatmap-name'
 		).orElseThrow(
