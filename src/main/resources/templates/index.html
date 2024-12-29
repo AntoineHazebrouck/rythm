@@ -62,11 +62,25 @@
 
 						<div class="row">
 							<div class="col-2 ms-auto">
-								<form action="/like" method="post">
-	
-									<input type="hidden" name="archive-code" th:value="${archive.code}">
-									<button type="submit" class="btn btn-info">Like</button>
-								</form>
+
+								<div th:switch="${likedSongs.contains(archive)}">
+
+									<span th:case="${false}">
+										<form action="/like" method="post">
+											<input type="hidden" name="archive-code" th:value="${archive.code}">
+											<button type="submit" class="btn btn btn-warning">Like</button>
+										</form>
+									</span>
+
+									<span th:case="${true}">
+										<form action="/unlike" method="post">
+											<input type="hidden" name="archive-code" th:value="${archive.code}">
+											<button type="submit" class="btn btn-info">Unlike</button>
+										</form>
+									</span>
+
+								</div>
+
 							</div>
 						</div>
 

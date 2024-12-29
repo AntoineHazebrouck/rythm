@@ -27,11 +27,14 @@ class IndexController {
 	private final UrlEncoderService urlEncoderService;
 
 	@GetMapping
-	public String index(Model model) {
+	public String index(Model model, @AuthenticationPrincipal OAuth2User principal) {
 
 		model.addAttribute(
 				"archives",
 				osuArchiveService.findAll());
+
+		model.addAttribute("likedSongs",
+				userService.asUserEntity(principal).getLikedSongs());
 
 		return "index";
 	}
