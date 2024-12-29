@@ -60,6 +60,16 @@
 							</div>
 						</div>
 
+						<div class="row">
+							<div class="col-2 ms-auto">
+								<form action="/like" method="post">
+	
+									<input type="hidden" name="archive-code" th:value="${archive.code}">
+									<button type="submit" class="btn btn-info">Like</button>
+								</form>
+							</div>
+						</div>
+
 					</div>
 				</div>
 

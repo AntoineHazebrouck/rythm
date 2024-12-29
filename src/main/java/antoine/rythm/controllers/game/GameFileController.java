@@ -1,7 +1,6 @@
 package antoine.rythm.controllers.game;
 
 import java.io.IOException;
-import java.util.Objects;
 
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.MediaType;
