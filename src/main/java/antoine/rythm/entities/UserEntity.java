@@ -2,6 +2,7 @@ package antoine.rythm.entities;
 
 import java.util.Set;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
@@ -15,6 +16,6 @@ public class UserEntity {
 
 	private int notesSpacing;
 
-	@ManyToMany
+	@ManyToMany(cascade = CascadeType.ALL)
 	private Set<OsuArchiveEntity> likedSongs;
 }

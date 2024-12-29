@@ -79,12 +79,12 @@ class IndexController {
 					.queryParam("error", "uploaded-file-is-empty")
 					.toUriString());
 		} else {
-			osuArchiveService.save(osuArchive);
+			var saved = osuArchiveService.save(osuArchive);
 
 			return new RedirectView(UriComponentsBuilder.newInstance()
 					.path("/")
 					.queryParam("success", "file-upload-successful")
-					.toUriString());
+					.toUriString() + "#" + saved.getCode());
 		}
 	}
 
