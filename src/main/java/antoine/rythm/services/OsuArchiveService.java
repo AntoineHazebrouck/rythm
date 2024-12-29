@@ -31,7 +31,7 @@ public class OsuArchiveService {
 		OsuArchiveEntity archive = new OsuArchiveEntity();
 		archive.setArchiveFileName(fileName);
 
-		archive.setCode(fileName.substring(0, 7));
+		archive.setCode(fileName.substring(0, 6));
 
 		String withoutCode = fileName.substring(7, fileName.length() - 4);
 		archive.setArtist(withoutCode.split(" - ")[0]);
