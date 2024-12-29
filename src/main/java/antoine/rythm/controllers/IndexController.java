@@ -30,7 +30,10 @@ class IndexController {
 	}
 
 	@PostMapping
-	public RedirectView postMethodName(@RequestParam("archive-code") String archiveCode) {
+	public RedirectView postMethodName(
+			@RequestParam("archive-code") String archiveCode,
+			@RequestParam("difficulty") String difficulty) {
+		System.out.println(difficulty);
 
 		String redirect = UriComponentsBuilder.newInstance()
 				.path("/setup")

@@ -15,7 +15,8 @@
 			</div>
 
 			<div th:if="${param.success}" class="alert alert-success col-3 m-2 mx-auto" role="alert">
-				<h4 th:if="${param.success[0]} == 'file-upload-successful'" class="alert-heading text-center m-0">File was
+				<h4 th:if="${param.success[0]} == 'file-upload-successful'" class="alert-heading text-center m-0">File
+					was
 					uploaded successfully !</h4>
 			</div>
 
@@ -38,19 +39,29 @@
 			<h1 class="text-center">Choose an osu archive</h1>
 
 			<div class="row my-4">
+
 				<div class="col-6" th:each="archive: ${archives}">
 					<div class="card p-3">
-						<h3 th:text="' ' + ${archive.artist} + ' - ' + ${archive.song}"></h3>
+						<div class="row">
+							<h3 th:text="' ' + ${archive.artist} + ' - ' + ${archive.song}"></h3>
+						</div>
 
-						<form action="/" method="post">
+						<div class="row">
+							<div class="col">
+								<div class="btn-group-vertical" role="group">
+									<form action="/" method="post" th:each="beatmap: ${archive.beatmaps}">
 
-							<input type="hidden" name="archive-code" th:value="${archive.code}">
-							<button type="submit" class="btn btn-primary p-3">Play</button>
-						</form>
+										<input type="hidden" name="archive-code" th:value="${archive.code}">
+										<input type="hidden" name="difficulty" th:value="${beatmap.difficulty}">
+										<button type="submit" class="btn btn-sm btn-secondary m-1"
+											th:text="${beatmap.difficulty}"></button>
+									</form>
+								</div>
+							</div>
+						</div>
 
 					</div>
 				</div>
-
 
 			</div>
 
