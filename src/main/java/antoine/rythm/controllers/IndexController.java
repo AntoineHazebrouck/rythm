@@ -66,7 +66,7 @@ class IndexController {
 
 		userService.save(user);
 
-		return new RedirectView("/"); // TODO anchor to the liked song
+		return new RedirectView("/#" + archiveCode);
 	}
 
 	@PostMapping(path = "/load-osu-archive")
