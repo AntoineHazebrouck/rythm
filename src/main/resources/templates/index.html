@@ -35,6 +35,28 @@
 			</div>
 		</section>
 
+		<section id="filtering-and-sorting">
+			<h4 class="text-center">Filters : </h4>
+
+			<div class="row">
+				<div class="col-6">
+
+					<form action="/" method="get">
+
+						<div class="form-check">
+							<input class="form-check-input" type="checkbox" value="true" id="likedonly"
+								name="likedonly" th:checked="${param.likedonly}">
+							<label class="form-check-label" for="likedonly">
+								Liked only
+							</label>
+						</div>
+
+						<button type="submit" class="btn btn-sm btn-info">Update filters</button>
+					</form>
+				</div>
+			</div>
+		</section>
+
 		<section id="archive-selection" class="my-3">
 			<h1 class="text-center">Choose an osu archive</h1>
 

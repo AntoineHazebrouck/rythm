@@ -1,6 +1,7 @@
 package antoine.rythm.controllers;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -27,11 +28,15 @@ class IndexController {
 	private final UrlEncoderService urlEncoderService;
 
 	@GetMapping
-	public String index(Model model, @AuthenticationPrincipal OAuth2User principal) {
+	public String index(
+			@RequestParam("likedonly") Optional<String> likedOnly,
+			Model model,
+			@AuthenticationPrincipal OAuth2User principal) {
 
-		model.addAttribute(
-				"archives",
-				osuArchiveService.findAll());
+		var archives = likedOnly.isPresent() ? userService.asUserEntity(principal).getLikedSongs()
+				: osuArchiveService.findAll();
+
+		model.addAttribute("archives", archives);
 
 		model.addAttribute("likedSongs",
 				userService.asUserEntity(principal).getLikedSongs());
