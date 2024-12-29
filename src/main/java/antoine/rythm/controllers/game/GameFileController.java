@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import antoine.rythm.entities.OsuArchiveEntity;
+import antoine.rythm.repositories.OsuBeatmapRepository;
 import antoine.rythm.services.OsuArchiveService;
 import antoine.rythm.services.UrlEncoderService;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/game")
 class GameFileController {
+	private final OsuBeatmapRepository osuBeatmapRepository;
 	private final OsuArchiveService osuArchiveService;
 	private final UrlEncoderService urlEncoderService;
 
@@ -41,12 +43,8 @@ class GameFileController {
 			@RequestParam("encoded-difficulty") String encodedDifficulty) throws IOException {
 		String decodedDifficulty = urlEncoderService.decode(encodedDifficulty);
 
-		String beatmapContent = osuArchiveService.findByCode(archiveCode)
-				.map(archive -> archive.getBeatmaps().stream()
-						.filter(beatmap -> Objects.equals(beatmap.getDifficulty(), decodedDifficulty))
-						.findFirst()
-						.map(beatmap -> beatmap.getBeatmapContent())
-						.orElseThrow())
+		String beatmapContent = osuBeatmapRepository.findByArchiveCodeAndDifficulty(archiveCode, decodedDifficulty)
+				.map(beatmap -> beatmap.getBeatmapContent())
 				.orElseThrow();
 
 		return ResponseEntity.ok()
