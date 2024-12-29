@@ -7,8 +7,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -61,6 +59,10 @@ public class OsuArchiveService {
 		return repository.findById(archiveFileName);
 	}
 
+	public Optional<OsuArchiveEntity> findByCode(String code) {
+		return repository.findByCode(code);
+	}
+
 	private static ZipFile asZipFile(String fileName, byte[] archive) throws IOException {
 		File temp = File.createTempFile(fileName, ".osz");
 		try (OutputStream outputStream = new FileOutputStream(temp)) {
@@ -88,7 +90,7 @@ public class OsuArchiveService {
 		return new Audio(stream.readAllBytes(), format);
 	}
 
-	private static Set<OsuBeatmapEntity> extractBeatmaps(String fileName, byte[] archive) throws IOException {
+	private static List<OsuBeatmapEntity> extractBeatmaps(String fileName, byte[] archive) throws IOException {
 		ZipFile zip = asZipFile(fileName, archive);
 
 		return zip.stream()
@@ -102,8 +104,7 @@ public class OsuArchiveService {
 					beatmap.setBeatmapContent(content(zip, name));
 					return beatmap;
 				})
-				.collect(Collectors.toSet());
-
+				.toList();
 	}
 
 	private static String content(ZipFile zip, String beatmapName) {

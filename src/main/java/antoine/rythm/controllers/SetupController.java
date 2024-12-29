@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import antoine.rythm.entities.OsuArchiveEntity;
 import antoine.rythm.services.OsuArchiveService;
 import antoine.rythm.services.UrlEncoderService;
 import antoine.rythm.services.UserService;
@@ -29,17 +30,12 @@ class SetupController {
 
 	@GetMapping
 	public String setup(
-			@RequestParam("encoded-archive-name") String encodedArchiveName, // TODO handle error
+			@RequestParam("archive-code") String archiveCode,
 			Model model) throws IOException {
-		String decodedArchiveName = urlEncoderService.decode(encodedArchiveName);
+		OsuArchiveEntity archive = osuArchiveService.findByCode(archiveCode).orElseThrow();
 
-		model.addAttribute("encodedArchiveName", encodedArchiveName);
-		model.addAttribute(
-				"beatmapsNames",
-				osuArchiveService.findById(decodedArchiveName)
-						.map(archive -> archive.getBeatmaps().stream()
-								.map(beatmap -> beatmap.getBeatmapFileName()))
-						.orElseThrow());
+		model.addAttribute("archive", archive);
+
 		return "setup";
 	}
 

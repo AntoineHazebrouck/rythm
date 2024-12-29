@@ -31,7 +31,7 @@
 					<div class="col">
 						<div class="form-group p-3">
 							<div th:each="archive: ${archives}">
-								<input type="radio" name="archive-name" th:text="' ' + ${archive.artist} + ' - ' + ${archive.song}" th:value="${archive.code}">
+								<input type="radio" name="archive-code" th:text="' ' + ${archive.artist} + ' - ' + ${archive.song}" th:value="${archive.code}">
 								<br>
 							</div>
 						</div>

@@ -10,7 +10,6 @@ import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import antoine.rythm.services.OsuArchiveService;
-import antoine.rythm.services.UrlEncoderService;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -18,7 +17,6 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/archive-selection")
 class ArchiveSelection {
 	private final OsuArchiveService osuArchiveService;
-	private final UrlEncoderService urlEncoderService;
 
 	@GetMapping
 	public String getMethodName(Model model) {
@@ -31,12 +29,11 @@ class ArchiveSelection {
 	}
 
 	@PostMapping
-	public RedirectView postMethodName(
-			@RequestParam("archive-name") String archiveName) {
+	public RedirectView postMethodName(@RequestParam("archive-code") String archiveCode) {
 
 		String redirect = UriComponentsBuilder.newInstance()
 				.path("/setup")
-				.queryParam("encoded-archive-name", urlEncoderService.encode(archiveName))
+				.queryParam("archive-code", archiveCode)
 				.toUriString();
 
 		return new RedirectView(redirect);
