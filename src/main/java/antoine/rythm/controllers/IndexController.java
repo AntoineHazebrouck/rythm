@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import antoine.rythm.entities.UserEntity;
 import antoine.rythm.services.OsuArchiveService;
 import antoine.rythm.services.UrlEncoderService;
 import antoine.rythm.services.UserService;
@@ -49,6 +50,20 @@ class IndexController {
 				.toUriString();
 
 		return new RedirectView(redirect);
+	}
+
+	@PostMapping("/like")
+	public RedirectView postMethodName(
+			@RequestParam("archive-code") String archiveCode,
+			@AuthenticationPrincipal OAuth2User principal) {
+
+		UserEntity user = userService.asUserEntity(principal);
+
+		user.getLikedSongs().add(osuArchiveService.findById(archiveCode).orElseThrow());
+
+		userService.save(user);
+
+		return new RedirectView("/"); // TODO anchor to the liked song
 	}
 
 	@PostMapping(path = "/load-osu-archive")

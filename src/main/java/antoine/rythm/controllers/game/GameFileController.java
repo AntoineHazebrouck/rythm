@@ -29,7 +29,7 @@ class GameFileController {
 	public ResponseEntity<ByteArrayResource> audio(
 			@RequestParam("archive-code") String archiveCode) throws IOException {
 
-		OsuArchiveEntity archive = osuArchiveService.findByCode(archiveCode)
+		OsuArchiveEntity archive = osuArchiveService.findById(archiveCode)
 				.orElseThrow();
 		return ResponseEntity.ok()
 				.contentType(MediaType.asMediaType(MimeType.valueOf("audio/" + archive.getAudioFormat())))

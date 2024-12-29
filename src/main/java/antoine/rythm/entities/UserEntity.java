@@ -4,7 +4,7 @@ import java.util.Set;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.ManyToMany;
 import lombok.Data;
 
 @Data
@@ -15,6 +15,6 @@ public class UserEntity {
 
 	private int notesSpacing;
 
-	@OneToMany
+	@ManyToMany
 	private Set<OsuArchiveEntity> likedSongs;
 }

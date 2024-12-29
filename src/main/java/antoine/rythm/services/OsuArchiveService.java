@@ -58,10 +58,6 @@ public class OsuArchiveService {
 		return repository.findById(archiveFileName);
 	}
 
-	public Optional<OsuArchiveEntity> findByCode(String code) {
-		return repository.findByCode(code);
-	}
-
 	private static ZipFile asZipFile(String fileName, byte[] archive) throws IOException {
 		File temp = File.createTempFile(fileName, ".osz");
 		try (OutputStream outputStream = new FileOutputStream(temp)) {

@@ -13,8 +13,7 @@ public class UserService {
 	private final UserRepository userRepository;
 
 	public UserEntity asUserEntity(OAuth2User principal) {
-		return userRepository.findById(principal.getAttribute("email"))
-				.orElseThrow(() -> new IllegalArgumentException("user was not found"));
+		return userRepository.findById(principal.getAttribute("email")).orElseThrow();
 	}
 
 	public UserEntity save(UserEntity user) {
