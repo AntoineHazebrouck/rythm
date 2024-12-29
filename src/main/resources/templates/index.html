@@ -30,8 +30,8 @@
 				<form action="/archive-selection" method="post">
 					<div class="col">
 						<div class="form-group p-3">
-							<div th:each="name: ${archivesNames}">
-								<input type="radio" name="archive-name" th:text="' ' + ${name}" th:value="${name}">
+							<div th:each="archive: ${archives}">
+								<input type="radio" name="archive-name" th:text="' ' + ${archive.artist} + ' - ' + ${archive.song}" th:value="${archive.code}">
 								<br>
 							</div>
 						</div>

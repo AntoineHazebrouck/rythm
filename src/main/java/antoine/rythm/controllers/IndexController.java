@@ -22,10 +22,8 @@ class IndexController {
 	public String index(Model model) {
 
 		model.addAttribute(
-				"archivesNames",
-				osuArchiveService.findAll().stream()
-						.map(archive -> archive.getArchiveFileName())
-						.toList());
+				"archives",
+				osuArchiveService.findAll());
 
 		return "index";
 	}
