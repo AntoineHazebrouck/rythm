@@ -102,6 +102,13 @@ public class OsuArchiveService {
 					OsuBeatmapEntity beatmap = new OsuBeatmapEntity();
 					beatmap.setBeatmapFileName(name);
 					beatmap.setBeatmapContent(content(zip, name));
+
+					beatmap.setArtist(name.split(" - ")[0]);
+					beatmap.setSong(name.substring(name.indexOf(" - ") + 3, name.indexOf("(") - 1));
+
+					beatmap.setDifficulty(name.substring(name.indexOf("[") + 1, name.indexOf("]")));
+					beatmap.setCreator(name.substring(name.indexOf("(") + 1, name.indexOf(")")));
+
 					return beatmap;
 				})
 				.toList();

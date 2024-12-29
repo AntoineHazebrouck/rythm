@@ -12,6 +12,12 @@ public class OsuBeatmapEntity {
 	@Id
 	private String beatmapFileName;
 
+	private String difficulty;
+	private String creator;
+
+	private String artist;
+	private String song;
+
 	@Lob
 	private String beatmapContent;
 }
