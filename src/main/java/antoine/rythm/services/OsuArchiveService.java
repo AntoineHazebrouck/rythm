@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -67,8 +68,9 @@ public class OsuArchiveService {
 		}
 	}
 
-	private static ZipEntry getLargestEntry(ZipFile zip) {
+	private static ZipEntry getLargestAudioEntry(ZipFile zip) {
 		return zip.stream()
+				.filter(entry -> Stream.of(".ogg", ".wav", "mp3").anyMatch(format -> entry.getName().endsWith(format)))
 				.sorted((left, right) -> Long.compare(right.getSize(), left.getSize()))
 				.findFirst()
 				.get();
@@ -77,7 +79,7 @@ public class OsuArchiveService {
 	private static Audio extractAudio(String fileName, byte[] archive) throws IOException {
 		ZipFile zip = asZipFile(fileName, archive);
 
-		ZipEntry audio = getLargestEntry(zip);
+		ZipEntry audio = getLargestAudioEntry(zip);
 		InputStream stream = zip.getInputStream(audio);
 		String[] split = audio.getName().split("\\.");
 		String format = split[split.length - 1];
@@ -99,10 +101,10 @@ public class OsuArchiveService {
 					beatmap.setBeatmapContent(content(zip, name));
 
 					beatmap.setArtist(name.split(" - ")[0]);
-					beatmap.setSong(name.substring(name.indexOf(" - ") + 3, name.indexOf("(") - 1));
+					beatmap.setSong(name.substring(name.indexOf(" - ") + 3, name.lastIndexOf("(") - 1));
 
-					beatmap.setDifficulty(name.substring(name.indexOf("[") + 1, name.indexOf("]")));
-					beatmap.setCreator(name.substring(name.indexOf("(") + 1, name.indexOf(")")));
+					beatmap.setDifficulty(name.substring(name.lastIndexOf("[") + 1, name.lastIndexOf("]")));
+					beatmap.setCreator(name.substring(name.lastIndexOf("(") + 1, name.lastIndexOf(")")));
 
 					return beatmap;
 				})
