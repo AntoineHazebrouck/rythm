@@ -1,8 +1,10 @@
 package antoine.rythm.entities;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToOne;
 import lombok.Data;
 
 @Data
@@ -20,4 +22,7 @@ public class OsuBeatmapEntity {
 
 	@Lob
 	private String beatmapContent;
+
+	@ManyToOne(cascade = CascadeType.ALL)
+	private OsuArchiveEntity archive;
 }

@@ -29,7 +29,6 @@ public class OsuArchiveService {
 		String fileName = osuArchive.getOriginalFilename();
 
 		OsuArchiveEntity archive = new OsuArchiveEntity();
-		archive.setArchiveFileName(fileName);
 
 		archive.setCode(fileName.substring(0, 6));
 
