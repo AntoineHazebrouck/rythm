@@ -44,9 +44,19 @@ class IndexController {
 	public RedirectView postMethodName(
 			@RequestParam("osu-archive") MultipartFile osuArchive) throws IOException {
 
-		osuArchiveService.save(osuArchive);
+		if (osuArchive.isEmpty()) {
+			return new RedirectView(UriComponentsBuilder.newInstance()
+					.path("/")
+					.queryParam("error", "uploaded-file-is-empty")
+					.toUriString());
+		} else {
+			osuArchiveService.save(osuArchive);
 
-		return new RedirectView("/");
+			return new RedirectView(UriComponentsBuilder.newInstance()
+					.path("/")
+					.queryParam("success", "file-upload-successful")
+					.toUriString());
+		}
 	}
 
 }
