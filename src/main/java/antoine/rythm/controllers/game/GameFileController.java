@@ -38,16 +38,15 @@ class GameFileController {
 	@GetMapping(path = "/beatmap")
 	public ResponseEntity<String> beatmap(
 			@RequestParam("archive-code") String archiveCode,
-			@RequestParam("encoded-beatmap-name") String encodedBeatmapName) throws IOException {
-		String decodedBeatmapName = urlEncoderService.decode(encodedBeatmapName);
+			@RequestParam("encoded-difficulty") String encodedDifficulty) throws IOException {
+		String decodedDifficulty = urlEncoderService.decode(encodedDifficulty);
 
-		OsuArchiveEntity archive = osuArchiveService.findByCode(archiveCode)
-				.orElseThrow();
-
-		String beatmapContent = archive.getBeatmaps().stream()
-				.filter(beatmap -> Objects.equals(beatmap.getBeatmapFileName(), decodedBeatmapName))
-				.findFirst()
-				.map(beatmap -> beatmap.getBeatmapContent())
+		String beatmapContent = osuArchiveService.findByCode(archiveCode)
+				.map(archive -> archive.getBeatmaps().stream()
+						.filter(beatmap -> Objects.equals(beatmap.getDifficulty(), decodedDifficulty))
+						.findFirst()
+						.map(beatmap -> beatmap.getBeatmapContent())
+						.orElseThrow())
 				.orElseThrow();
 
 		return ResponseEntity.ok()

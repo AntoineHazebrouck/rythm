@@ -2,6 +2,8 @@ package antoine.rythm.controllers;
 
 import java.io.IOException;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,12 +14,16 @@ import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import antoine.rythm.services.OsuArchiveService;
+import antoine.rythm.services.UrlEncoderService;
+import antoine.rythm.services.UserService;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Controller
 class IndexController {
+	private final UserService userService;
 	private final OsuArchiveService osuArchiveService;
+	private final UrlEncoderService urlEncoderService;
 
 	@GetMapping
 	public String index(Model model) {
@@ -32,12 +38,14 @@ class IndexController {
 	@PostMapping
 	public RedirectView postMethodName(
 			@RequestParam("archive-code") String archiveCode,
-			@RequestParam("difficulty") String difficulty) {
-		System.out.println(difficulty);
+			@RequestParam("difficulty") String difficulty,
+			@AuthenticationPrincipal OAuth2User principal) {
 
 		String redirect = UriComponentsBuilder.newInstance()
-				.path("/setup")
+				.path("/game")
 				.queryParam("archive-code", archiveCode)
+				.queryParam("encoded-difficulty", urlEncoderService.encode(difficulty))
+				.queryParam("notes-spacing", userService.asUserEntity(principal).getNotesSpacing())
 				.toUriString();
 
 		return new RedirectView(redirect);

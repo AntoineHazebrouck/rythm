@@ -41,10 +41,10 @@ try {
 			'archive-code'
 		).orElseThrow(
 			new Error('Could not read archive-code property')
-		)}&encoded-beatmap-name=${getParameter(
-			'encoded-beatmap-name'
+		)}&encoded-difficulty=${getParameter(
+			'encoded-difficulty'
 		).orElseThrow(
-			new Error('Could not read encoded-beatmap-name property')
+			new Error('Could not read encoded-difficulty property')
 		)}`
 	).then((response) => {
 		if (response.ok) return response.text();
