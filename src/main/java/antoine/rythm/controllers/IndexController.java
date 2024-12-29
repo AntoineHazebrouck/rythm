@@ -56,13 +56,27 @@ class IndexController {
 	}
 
 	@PostMapping("/like")
-	public RedirectView postMethodName(
+	public RedirectView like(
 			@RequestParam("archive-code") String archiveCode,
 			@AuthenticationPrincipal OAuth2User principal) {
 
 		UserEntity user = userService.asUserEntity(principal);
 
 		user.getLikedSongs().add(osuArchiveService.findById(archiveCode).orElseThrow());
+
+		userService.save(user);
+
+		return new RedirectView("/#" + archiveCode);
+	}
+
+	@PostMapping("/unlike")
+	public RedirectView unlike(
+			@RequestParam("archive-code") String archiveCode,
+			@AuthenticationPrincipal OAuth2User principal) {
+
+		UserEntity user = userService.asUserEntity(principal);
+
+		user.getLikedSongs().remove(osuArchiveService.findById(archiveCode).orElseThrow());
 
 		userService.save(user);
 
