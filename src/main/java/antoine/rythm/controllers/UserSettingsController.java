@@ -33,7 +33,7 @@ class UserSettingsController {
 
 	@PostMapping
 	public RedirectView postMethodName(
-			@Validated @ModelAttribute UserSettingsDto userSettings,
+			@Validated @ModelAttribute("userSettings") UserSettingsDto userSettings,
 			@AuthenticationPrincipal OAuth2User principal) {
 		UserEntity user = userService.asUserEntity(principal);
 

@@ -3,11 +3,18 @@ package antoine.rythm.controllers.dto;
 import java.util.Map;
 
 import antoine.rythm.entities.UserEntity;
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
 public class UserSettingsDto {
-	private int notesSpacing;
+	@DecimalMin("0.5")
+	@DecimalMax("15")
+	private double notesSpacing;
+
+	@Size(min = 15, max = 15)
 	private Map<Integer, Character> keys;
 
 	public static UserSettingsDto fromEntity(UserEntity entity) {

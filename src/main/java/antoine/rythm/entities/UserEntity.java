@@ -16,7 +16,7 @@ public class UserEntity {
 	@Id
 	private String email;
 
-	private int notesSpacing;
+	private double notesSpacing;
 
 	@ElementCollection
 	private Map<Integer, Character> keys;
