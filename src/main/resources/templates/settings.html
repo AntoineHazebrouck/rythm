@@ -11,9 +11,24 @@
 			<h1>Settings</h1>
 			<br>
 			<form action="/user/settings" method="post">
+				<!-- th:object="${userSettings}" -->
+				<div class="input-group mb-3">
+					<span class="input-group-text">Notes spacing : </span>
+					<input class="form-control" placeholder="Notes spacing" type="number"
+						th:field="${userSettings.notesSpacing}">
+				</div>
+
 				<div class="form-group p-3">
-					<label for="notes-spacing">Notes spacing : </label>
-					<input name="notes-spacing" id="notes-spacing" type="number" th:value="${notesSpacing}">
+					<div th:each="keyEntry: ${ userSettings.keys }" th:with="label='key-' + ${keyEntry.key}">
+
+						<div class="input-group mb-3">
+
+							<span class="input-group-text" th:text="${label}"></span>
+							<input class="form-control" th:placeholder="${label}" type="text"
+								th:field="${userSettings.keys['__${keyEntry.key}__']}">
+						</div>
+
+					</div>
 				</div>
 				<button type="submit" class="btn btn-primary p-3">Save</button>
 			</form>

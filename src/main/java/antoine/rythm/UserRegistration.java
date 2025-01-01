@@ -1,5 +1,8 @@
 package antoine.rythm;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,6 +31,15 @@ class UserRegistration {
 				UserEntity user = new UserEntity();
 				user.setEmail(principal.getAttribute("email"));
 				user.setNotesSpacing(1);
+
+				Map<Integer, Character> keys = new HashMap<>();
+				keys.put(1, 'a');
+				keys.put(2, 'z');
+				keys.put(3, 'e');
+				keys.put(4, 'r');
+				keys.put(5, 't');
+				user.setKeys(keys);
+
 				userService.save(user);
 			}
 		};
