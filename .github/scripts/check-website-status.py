@@ -1,16 +1,14 @@
 import requests
 import sys
 
-response = requests.get('https://www.antoinehazebrouck.com')
+response = requests.get("https://www.antoinehazebrouck.com")
 
 if not response.ok:
 	sys.exit(response.status_code)
 else:
 	print(response.status_code)
-	print(response.text)
 
-	titleTag = "<title>Home</title>"
-	if titleTag not in response.text:
-		sys.exit(f"{titleTag} not in response")
+	if not response.url.startswith("https://accounts.google.com/"):
+		sys.exit(f"request was not redirected to 'https://accounts.google.com/' : {response.url}")
 	else:
 		print("ok")
