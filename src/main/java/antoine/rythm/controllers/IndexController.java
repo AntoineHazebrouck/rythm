@@ -95,7 +95,7 @@ class IndexController {
 		if (osuArchive.isEmpty()) {
 			return new RedirectView(UriComponentsBuilder.newInstance()
 					.path("/")
-					.queryParam("error", "uploaded-file-is-empty")
+					.queryParam("error", "Uploaded file was empty !")
 					.toUriString());
 		} else {
 			var saved = osuArchiveService.save(osuArchive);

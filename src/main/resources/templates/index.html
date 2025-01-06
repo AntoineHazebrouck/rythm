@@ -8,11 +8,8 @@
 	<main class="container">
 
 		<section id="archive-upload" class="my-2">
-			<div th:if="${param.error}" class="alert alert-danger col-3 m-2 mx-auto" role="alert">
-				<h4 th:if="${param.error[0]} == 'uploaded-file-is-empty'" class="alert-heading text-center m-0">Uploaded
-					file is empty
-					!</h4>
-			</div>
+			
+			<div th:replace="~{../fragments/general.html :: alert}"> </div>
 
 			<div th:if="${param.success}" class="alert alert-success col-3 m-2 mx-auto" role="alert">
 				<h4 th:if="${param.success[0]} == 'file-upload-successful'" class="alert-heading text-center m-0">File
