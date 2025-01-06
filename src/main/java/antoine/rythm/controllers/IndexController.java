@@ -102,7 +102,7 @@ class IndexController {
 
 			return new RedirectView(UriComponentsBuilder.newInstance()
 					.path("/")
-					.queryParam("success", "file-upload-successful")
+					.queryParam("success", "File was uploaded successfully !")
 					.toUriString() + "#" + saved.getCode());
 		}
 	}
