@@ -36,6 +36,16 @@
 		</div>
 		<hr>
 	</header>
+
+	<body>
+		<div th:fragment="alert" th:if="${param.error}" class="alert alert-danger m-2 mx-auto" role="alert">
+
+			<div th:each="message: ${param.error}">
+				<h4 class="alert-heading text-center m-0" th:text="${message}"></h4>
+			</div>
+
+		</div>
+	</body>
 </body>
 
 </html>

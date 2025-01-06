@@ -10,6 +10,9 @@
 		<div class="col-6 mx-auto card text-center p-3">
 			<h1>Settings</h1>
 			<br>
+
+			<div th:replace="~{../fragments/general.html :: alert}"> </div>
+
 			<form action="/user/settings" method="post">
 				<!-- th:object="${userSettings}" -->
 				<div class="input-group mb-3">
