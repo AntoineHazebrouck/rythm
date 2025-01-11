@@ -11,8 +11,9 @@ import lombok.Data;
 @Data
 @Entity
 public class OsuBeatmapEntity {
-	// TODO create unique id
 	@Id
+	private String id;
+
 	private String beatmapFileName;
 
 	private String difficulty;
