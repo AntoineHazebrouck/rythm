@@ -23,6 +23,14 @@ export class Optional<T> {
 		}
 	}
 
+	public orElse(substitute: T) {
+		if (this.value) {
+			return this.value;
+		} else {
+			return substitute;
+		}
+	}
+
 	public map<O>(mapping: (value: T) => O): Optional<O> {
 		if (this.value) {
 			return Optional.of(mapping(this.value));

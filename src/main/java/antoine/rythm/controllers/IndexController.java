@@ -1,12 +1,15 @@
 package antoine.rythm.controllers;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.MultiValueMapAdapter;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -50,11 +53,20 @@ class IndexController {
 			@RequestParam("difficulty") String difficulty,
 			@AuthenticationPrincipal OAuth2User principal) {
 
+		var asString = userService.asUserEntity(principal).getKeys()
+				.entrySet().stream()
+				.collect(Collectors.toMap(
+						e -> e.getKey().toString(),
+						e -> List.of(e.getValue().toString())));
+
+		var keys = new MultiValueMapAdapter<String, String>(asString);
+
 		String redirect = UriComponentsBuilder.newInstance()
 				.path("/game")
 				.queryParam("archive-code", archiveCode)
 				.queryParam("encoded-difficulty", urlEncoderService.encode(difficulty))
 				.queryParam("notes-spacing", userService.asUserEntity(principal).getNotesSpacing())
+				.queryParams(keys)
 				.toUriString();
 
 		return new RedirectView(redirect);

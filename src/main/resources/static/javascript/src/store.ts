@@ -4,6 +4,7 @@ import { KeyState } from './inputs/key-state';
 import { KeyStatus } from './inputs/key-status';
 import { Observer, Sender } from './utils/observer-pattern';
 import { Volume } from './audio-handler';
+import { Optional } from './utils/optional';
 
 class KeySender implements Sender<KeyStatus> {
 	public constructor(private readonly observers: Observer<KeyStatus>[]) {}
@@ -32,22 +33,16 @@ class VolumeSender implements Sender<Volume> {
 export class Store {
 	private volume: Volume;
 	private readonly keyStates: KeyStatus[];
-	private readonly keyToColumnMapping: Record<string, number>;
 	private readonly userHits: UserHitResult[];
 
 	public readonly keySender: Sender<KeyStatus>;
 	public readonly volumeSender: Sender<Volume>;
 
 	public constructor(keyToColumnMapping: Record<string, number>) {
-		this.keyStates = [
-			new KeyStatus('a', KeyState.UP),
-			new KeyStatus('z', KeyState.UP),
-			new KeyStatus('e', KeyState.UP),
-			new KeyStatus('r', KeyState.UP),
-			new KeyStatus('t', KeyState.UP),
-			new KeyStatus(' ', KeyState.UP),
-		];
-		this.keyToColumnMapping = keyToColumnMapping;
+		this.keyStates = Object.entries(keyToColumnMapping).map(
+			(mapping) => new KeyStatus(mapping[0], mapping[1], KeyState.UP)
+		);
+
 		this.userHits = [];
 		this.keySender = new KeySender([]);
 		this.volumeSender = new VolumeSender([]);
@@ -73,15 +68,17 @@ export class Store {
 	}
 
 	public setKeyState(key: string, state: KeyState): void {
-		const newKeyStatus = new KeyStatus(key, state);
-		this.keyStates[
-			this.keyStates.findIndex((searchKey) => searchKey.key === key)
-		] = newKeyStatus;
-		this.keySender.notify(newKeyStatus);
+		Optional.of(
+			this.keyStates.find((searchKey) => searchKey.key === key)
+		).ifPresent((keyStatus) => {
+			keyStatus.state = state;
+			this.keySender.notify(keyStatus);
+		});
 	}
 
 	public getColumnForKey(key: string) {
-		return this.keyToColumnMapping[key];
+		return this.keyStates.find((keyStatus) => keyStatus.key === key)
+			?.column;
 	}
 
 	public isAlreadyHit(hit: HitObject): boolean {

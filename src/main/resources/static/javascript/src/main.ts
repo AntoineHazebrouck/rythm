@@ -12,11 +12,22 @@ import { TimedEventsHandler } from './timed-events-handler';
 import { getParameter } from './inputs/parameters-handler';
 
 const store = new Store({
-	a: 0,
-	z: 1,
-	e: 2,
-	r: 3,
-	t: 4,
+	' ': -1,
+	[getParameter('1').orElse('a')]: 0,
+	[getParameter('2').orElse('z')]: 1, 
+	[getParameter('3').orElse('e')]: 2,
+	[getParameter('4').orElse('r')]: 3,
+	[getParameter('5').orElse('t')]: 4,
+	[getParameter('6').orElse('y')]: 5,
+	[getParameter('7').orElse('u')]: 6,
+	[getParameter('8').orElse('i')]: 7,
+	[getParameter('9').orElse('o')]: 8,
+	[getParameter('10').orElse('p')]: 9,
+	[getParameter('11').orElse('q')]: 10,
+	[getParameter('12').orElse('s')]: 11,
+	[getParameter('13').orElse('d')]: 12,
+	[getParameter('14').orElse('f')]: 13,
+	[getParameter('15').orElse('g')]: 14,
 });
 
 const htmlDisplayHandler = new HtmlDisplayHandler(
