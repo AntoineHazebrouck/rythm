@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import antoine.rythm.controllers.dto.UserSettingsDto;
 import antoine.rythm.entities.UserEntity;
@@ -44,19 +45,23 @@ class UserSettingsController {
 
 		userService.save(userSettings.toEntity(user));
 
-		return new RedirectView("/user/settings");
+		return new RedirectView(UriComponentsBuilder.newInstance()
+				.path("/user/settings")
+				.queryParam("success", "Settings were successfully updated !")
+				.toUriString());
 	}
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public RedirectView handleConstraintViolationException(RedirectAttributes attributes, MethodArgumentNotValidException cve) {
+	public RedirectView handleConstraintViolationException(RedirectAttributes attributes,
+			MethodArgumentNotValidException cve) {
 		List<String> errorMessages = cve.getFieldErrors()
 				.stream()
 				.map(error -> error.getField() + " : " + error.getDefaultMessage())
 				.toList();
 
-		
-		attributes.addAttribute("error", errorMessages);
-
-		return new RedirectView("/user/settings");
+		return new RedirectView(UriComponentsBuilder.newInstance()
+				.path("/user/settings")
+				.queryParam("error", errorMessages)
+				.toUriString());
 	}
 }
