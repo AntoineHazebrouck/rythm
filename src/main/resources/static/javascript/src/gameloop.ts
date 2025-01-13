@@ -14,9 +14,8 @@ export class Gameloop {
 	}
 
 	public loop(): void {
-		this.canvasDisplayHandler.draw();
-		this.timedEventsHandler.transferUnhitNotesAsMisses();
+		this.timedEventsHandler.transferUnhitNotesAsMisses(); // TODO move out (when a note is hit it should)
 
-		window.requestAnimationFrame(() => this.loop());
+		// window.requestAnimationFrame(() => this.loop()); // TODO
 	}
 }

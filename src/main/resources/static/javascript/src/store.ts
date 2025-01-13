@@ -77,8 +77,7 @@ export class Store {
 	}
 
 	public getColumnForKey(key: string) {
-		return this.keyStates.find((keyStatus) => keyStatus.key === key)
-			?.column;
+		return this.keyStates.find((keyStatus) => keyStatus.key === key)!.column;
 	}
 
 	public isAlreadyHit(hit: HitObject): boolean {

@@ -1,16 +1,15 @@
-import { HoldableObject } from 'osu-parsers';
-import { HitsHandler } from '../hits-handler.js';
-import { Store } from '../store.js';
-import { KeyState } from '../inputs/key-state.js';
+import Two from 'two.js';
 import { AudioHandler } from '../audio-handler.js';
+import { HitsHandler } from '../hits-handler.js';
+import { KeyState } from '../inputs/key-state.js';
 import { getParameter } from '../inputs/parameters-handler.js';
+import { Store } from '../store.js';
 
 export class CanvasDisplayHandler {
 	private readonly store: Store;
 	private readonly hitsHandler: HitsHandler;
 	private readonly audioHandler: AudioHandler;
-	private readonly canvas: HTMLCanvasElement;
-	private readonly context: CanvasRenderingContext2D;
+	private readonly renderer: Two;
 
 	public constructor(
 		store: Store,
@@ -21,36 +20,42 @@ export class CanvasDisplayHandler {
 		this.store = store;
 		this.hitsHandler = hitsHandler;
 		this.audioHandler = audioHandler;
-		this.canvas = canvas;
-		this.context = canvas.getContext('2d')!;
+
+		this.renderer = new Two({
+			type: Two.Types.webgl,
+			domElement: canvas,
+		});
+
+		this.renderer.bind('update', () => this.draw());
+		this.renderer.play();
 	}
 
 	private laneWidth(): number {
-		return this.canvas.width / this.hitsHandler.columns().length;
+		return this.renderer.width / this.hitsHandler.columns().length;
 	}
 
 	private fitToScreen(): void {
-		this.canvas.width = screen.width / 2;
-		this.canvas.height = screen.height;
+		this.renderer.width = screen.width / 2;
+		this.renderer.height = screen.height;
 	}
 
 	private drawNoteLimitLine(): void {
-		this.context.beginPath();
-		this.context.moveTo(0, 0);
-		this.context.lineTo(this.canvas.width, 0);
-		this.context.stroke();
+		this.renderer.makeLine(0, 0, this.renderer.width, 0);
 
 		this.store.getKeyStates().forEach((status) => {
 			if (status.state === KeyState.PRESSED) {
-				this.context.fillStyle = 'red';
+				console.log(status);
+
 				const laneX =
 					this.laneWidth() * this.store.getColumnForKey(status.key);
-
-				this.context.beginPath();
-				this.context.rect(laneX, 0, this.laneWidth(), 10);
-				this.context.fill();
-
-				this.context.fillStyle = 'black';
+				const rectangle = this.renderer.makeRoundedRectangle(
+					laneX,
+					0,
+					this.laneWidth(),
+					10,
+					5
+				);
+				rectangle.fill = 'red';
 			}
 		});
 	}
@@ -67,30 +72,39 @@ export class CanvasDisplayHandler {
 	public draw(): void {
 		this.fitToScreen();
 
-		this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+		this.renderer.clear();
 
-		this.hitsHandler.nextHits().forEach((hit) => {
-			this.context.beginPath();
-			const laneX =
-				this.laneWidth() *
-				this.hitsHandler.columns().findIndex((x) => x === hit.startX);
-			this.context.moveTo(laneX, this.getDisplayedY(hit.startTime));
-
-			if (hit instanceof HoldableObject) {
-				this.context.rect(
-					laneX,
-					this.getDisplayedY(hit.startTime),
-					this.laneWidth(),
-					this.getDisplayedY(hit.endTime) -
-						this.getDisplayedY(hit.startTime)
-				);
-			} else {
-				const start = this.getDisplayedY(hit.startTime - 5);
-				const end = this.getDisplayedY(hit.startTime + 5);
-				this.context.rect(laneX, start, this.laneWidth(), end - start);
-			}
-			this.context.fill();
-		});
 		this.drawNoteLimitLine();
+		// this.renderer .beginPath();
+		// this.renderer.moveTo(0, 0);
+		// this.renderer.lineTo(this.renderer.width, 0);
+		// this.renderer.stroke();
+
+		// this.context.clearRect(0, 0, this.renderer.width, this.renderer.height);
+
+		// this.hitsHandler.nextHits().forEach((hit) => {
+		// 	this.context.beginPath();
+		// 	const laneX =
+		// 		this.laneWidth() *
+		// 		this.hitsHandler.columns().findIndex((x) => x === hit.startX);
+		// 	this.context.moveTo(laneX, this.getDisplayedY(hit.startTime));
+
+		// 	if (hit instanceof HoldableObject) {
+		// 		this.context.rect(
+		// 			laneX,
+		// 			this.getDisplayedY(hit.startTime),
+		// 			this.laneWidth(),
+		// 			this.getDisplayedY(hit.endTime) -
+		// 				this.getDisplayedY(hit.startTime)
+		// 		);
+		// 	} else {
+		// 		const start = this.getDisplayedY(hit.startTime - 5);
+		// 		const end = this.getDisplayedY(hit.startTime + 5);
+		// 		this.context.rect(laneX, start, this.laneWidth(), end - start);
+		// 	}
+		// 	this.context.fill();
+		// });
+		// this.drawNoteLimitLine();
+		// this.renderer.update();
 	}
 }
