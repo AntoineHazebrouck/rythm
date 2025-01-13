@@ -1,7 +1,10 @@
+import { HoldableObject } from 'osu-parsers';
 import Two from 'two.js';
+import { RoundedRectangle } from 'two.js/src/shapes/rounded-rectangle';
 import { AudioHandler } from '../audio-handler.js';
 import { HitsHandler } from '../hits-handler.js';
 import { KeyState } from '../inputs/key-state.js';
+import { KeyStatus } from '../inputs/key-status.js';
 import { getParameter } from '../inputs/parameters-handler.js';
 import { Store } from '../store.js';
 
@@ -10,6 +13,8 @@ export class CanvasDisplayHandler {
 	private readonly hitsHandler: HitsHandler;
 	private readonly audioHandler: AudioHandler;
 	private readonly renderer: Two;
+
+	private readonly noteKeysRectangles: Map<KeyStatus, RoundedRectangle>;
 
 	public constructor(
 		store: Store,
@@ -24,6 +29,22 @@ export class CanvasDisplayHandler {
 		this.renderer = new Two({
 			type: Two.Types.webgl,
 			domElement: canvas,
+		});
+
+		this.noteKeysRectangles = new Map();
+		this.store.getKeyStates().forEach((status) => {
+			const laneX =
+				this.laneWidth() * this.store.getColumnForKey(status.key);
+			const rectangle = this.renderer.makeRoundedRectangle(
+				laneX,
+				0,
+				this.laneWidth(),
+				10,
+				5
+			);
+			rectangle.fill = 'red';
+			// rectangle.visible = false;
+			this.noteKeysRectangles.set(status, rectangle);
 		});
 
 		this.renderer.bind('update', () => this.draw());
@@ -42,20 +63,45 @@ export class CanvasDisplayHandler {
 	private drawNoteLimitLine(): void {
 		this.renderer.makeLine(0, 0, this.renderer.width, 0);
 
-		this.store.getKeyStates().forEach((status) => {
+		Array.from(this.noteKeysRectangles.keys()).forEach((status) => {
+			console.log(status);
+			
 			if (status.state === KeyState.PRESSED) {
-				console.log(status);
+				console.log('qsdsqfqsfqsfqsf');
 
-				const laneX =
-					this.laneWidth() * this.store.getColumnForKey(status.key);
+				this.noteKeysRectangles.get(status)!.visible = true;
+			}
+		});
+	}
+
+	private drawNotes(): void {
+		this.hitsHandler.nextHits().forEach((hit) => {
+			if (this.getDisplayedY(hit.startTime) > this.renderer.height)
+				return;
+
+			const laneX =
+				this.laneWidth() *
+				this.hitsHandler.columns().findIndex((x) => x === hit.startX);
+
+			if (hit instanceof HoldableObject) {
 				const rectangle = this.renderer.makeRoundedRectangle(
 					laneX,
-					0,
+					this.getDisplayedY(hit.startTime),
 					this.laneWidth(),
-					10,
+					this.getDisplayedY(hit.endTime) -
+						this.getDisplayedY(hit.startTime),
 					5
 				);
-				rectangle.fill = 'red';
+			} else {
+				const start = this.getDisplayedY(hit.startTime - 1);
+				const end = this.getDisplayedY(hit.startTime + 1);
+				this.renderer.makeRoundedRectangle(
+					laneX,
+					start,
+					this.laneWidth(),
+					end - start,
+					5
+				);
 			}
 		});
 	}
@@ -74,37 +120,8 @@ export class CanvasDisplayHandler {
 
 		this.renderer.clear();
 
+		this.drawNotes();
+
 		this.drawNoteLimitLine();
-		// this.renderer .beginPath();
-		// this.renderer.moveTo(0, 0);
-		// this.renderer.lineTo(this.renderer.width, 0);
-		// this.renderer.stroke();
-
-		// this.context.clearRect(0, 0, this.renderer.width, this.renderer.height);
-
-		// this.hitsHandler.nextHits().forEach((hit) => {
-		// 	this.context.beginPath();
-		// 	const laneX =
-		// 		this.laneWidth() *
-		// 		this.hitsHandler.columns().findIndex((x) => x === hit.startX);
-		// 	this.context.moveTo(laneX, this.getDisplayedY(hit.startTime));
-
-		// 	if (hit instanceof HoldableObject) {
-		// 		this.context.rect(
-		// 			laneX,
-		// 			this.getDisplayedY(hit.startTime),
-		// 			this.laneWidth(),
-		// 			this.getDisplayedY(hit.endTime) -
-		// 				this.getDisplayedY(hit.startTime)
-		// 		);
-		// 	} else {
-		// 		const start = this.getDisplayedY(hit.startTime - 5);
-		// 		const end = this.getDisplayedY(hit.startTime + 5);
-		// 		this.context.rect(laneX, start, this.laneWidth(), end - start);
-		// 	}
-		// 	this.context.fill();
-		// });
-		// this.drawNoteLimitLine();
-		// this.renderer.update();
 	}
 }
