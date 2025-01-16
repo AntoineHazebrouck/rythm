@@ -1,12 +1,13 @@
 import { HoldableObject } from 'osu-parsers';
 import Two from 'two.js';
+import { Group } from 'two.js/src/group';
 import { RoundedRectangle } from 'two.js/src/shapes/rounded-rectangle';
 import { AudioHandler } from '../audio-handler.js';
 import { HitsHandler } from '../hits-handler.js';
 import { KeyState } from '../inputs/key-state.js';
-import { KeyStatus } from '../inputs/key-status.js';
 import { getParameter } from '../inputs/parameters-handler.js';
 import { Store } from '../store.js';
+import { Vector } from 'two.js/src/vector';
 
 export class CanvasDisplayHandler {
 	private readonly store: Store;
@@ -14,7 +15,8 @@ export class CanvasDisplayHandler {
 	private readonly audioHandler: AudioHandler;
 	private readonly renderer: Two;
 
-	private readonly noteKeysRectangles: Map<KeyStatus, RoundedRectangle>;
+	private readonly userKeyInputsIndicators: Map<string, RoundedRectangle>;
+	private readonly notes: Group;
 
 	public constructor(
 		store: Store,
@@ -31,21 +33,57 @@ export class CanvasDisplayHandler {
 			domElement: canvas,
 		});
 
-		this.noteKeysRectangles = new Map();
-		this.store.getKeyStates().forEach((status) => {
-			const laneX =
-				this.laneWidth() * this.store.getColumnForKey(status.key);
-			const rectangle = this.renderer.makeRoundedRectangle(
-				laneX,
-				0,
-				this.laneWidth(),
-				10,
-				5
-			);
-			rectangle.fill = 'red';
-			// rectangle.visible = false;
-			this.noteKeysRectangles.set(status, rectangle);
-		});
+		this.userKeyInputsIndicators = new Map(
+			this.store.getKeyStates().map((status) => {
+				const laneX =
+					this.laneWidth() * this.store.getColumnForKey(status.key);
+				const rectangle = this.renderer.makeRoundedRectangle(
+					laneX,
+					0,
+					this.laneWidth(),
+					10,
+					5
+				);
+				rectangle.fill = 'red';
+				rectangle.visible = false;
+				return [status.key, rectangle];
+			})
+		);
+
+		this.notes = this.renderer.makeGroup(
+			this.hitsHandler.nextHits().map((hit) => {
+				const laneX =
+					this.laneWidth() *
+					this.hitsHandler
+						.columns()
+						.findIndex((x) => x === hit.startX);
+
+				if (hit instanceof HoldableObject) {
+					const rectangle = this.renderer.makeRoundedRectangle(
+						laneX,
+						this.getDisplayedY(hit.startTime),
+						this.laneWidth(),
+						this.getDisplayedY(hit.endTime) -
+							this.getDisplayedY(hit.startTime),
+						5
+					);
+
+					return rectangle;
+				} else {
+					const start = this.getDisplayedY(hit.startTime - 5);
+					const end = this.getDisplayedY(hit.startTime + 5);
+					const rectangle = this.renderer.makeRoundedRectangle(
+						laneX,
+						start,
+						this.laneWidth(),
+						end - start,
+						5
+					);
+
+					return rectangle;
+				}
+			})
+		);
 
 		this.renderer.bind('update', () => this.draw());
 		this.renderer.play();
@@ -63,46 +101,9 @@ export class CanvasDisplayHandler {
 	private drawNoteLimitLine(): void {
 		this.renderer.makeLine(0, 0, this.renderer.width, 0);
 
-		Array.from(this.noteKeysRectangles.keys()).forEach((status) => {
-			console.log(status);
-			
-			if (status.state === KeyState.PRESSED) {
-				console.log('qsdsqfqsfqsfqsf');
-
-				this.noteKeysRectangles.get(status)!.visible = true;
-			}
-		});
-	}
-
-	private drawNotes(): void {
-		this.hitsHandler.nextHits().forEach((hit) => {
-			if (this.getDisplayedY(hit.startTime) > this.renderer.height)
-				return;
-
-			const laneX =
-				this.laneWidth() *
-				this.hitsHandler.columns().findIndex((x) => x === hit.startX);
-
-			if (hit instanceof HoldableObject) {
-				const rectangle = this.renderer.makeRoundedRectangle(
-					laneX,
-					this.getDisplayedY(hit.startTime),
-					this.laneWidth(),
-					this.getDisplayedY(hit.endTime) -
-						this.getDisplayedY(hit.startTime),
-					5
-				);
-			} else {
-				const start = this.getDisplayedY(hit.startTime - 1);
-				const end = this.getDisplayedY(hit.startTime + 1);
-				this.renderer.makeRoundedRectangle(
-					laneX,
-					start,
-					this.laneWidth(),
-					end - start,
-					5
-				);
-			}
+		this.store.getKeyStates().forEach((status) => {
+			this.userKeyInputsIndicators.get(status.key)!.visible =
+				status.state === KeyState.PRESSED;
 		});
 	}
 
@@ -118,9 +119,9 @@ export class CanvasDisplayHandler {
 	public draw(): void {
 		this.fitToScreen();
 
-		this.renderer.clear();
-
-		this.drawNotes();
+		this.notes.position.y = this.getDisplayedY(
+			this.hitsHandler.firstHit().startTime
+		);
 
 		this.drawNoteLimitLine();
 	}

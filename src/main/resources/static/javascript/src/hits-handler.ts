@@ -36,6 +36,10 @@ export class HitsHandler {
 		);
 	}
 
+	public firstHit(): HitObject {
+		return this.hits[0];
+	}
+
 	// allows the boxing of missed (not hit by the user) notes in the store
 	public pastHits(): HitObject[] {
 		const data = this.hits.filter((hit) => {
