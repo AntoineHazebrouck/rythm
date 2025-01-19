@@ -26,12 +26,21 @@
 docker run -it --rm --name certbot -p 80:80 -v "C:/Users/Jez/Desktop/certs:/etc/letsencrypt" -v "C:/Users/Jez/Desktop/certs:/var/lib/letsencrypt" certbot/certbot certonly
 ```
 
-## Google OAuth2
+## OAuth2
+
+### Google : antoine.haz@gmail.com
 
 [https://console.cloud.google.com/auth/overview?inv=1&invt=AblGng&project=antoinehazebrouck&supportedpurview=project](https://console.cloud.google.com/auth/overview?inv=1&invt=AblGng&project=antoinehazebrouck&supportedpurview=project)
 
+### Osu : antoine.haz@gmail.com (jesusdu59_old)
+
+[https://osu.ppy.sh/home/account/edit#new-oauth-application](https://osu.ppy.sh/home/account/edit#new-oauth-application)
+
 ## TODO
 
+comments and notes on maps
+scores from osu api
+oauth2 osu api
 webGL pour le jeu
 scores du jeu pendant le jeu et à la fin
 scoreboard : pour une map, la liste de tous les meilleurs temps, avec npm prenom photo etc

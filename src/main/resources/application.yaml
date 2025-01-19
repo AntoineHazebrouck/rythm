@@ -4,13 +4,32 @@ server:
         certificate: classpath:certificates/lets-encrypt/fullchain.pem
         certificate-private-key: classpath:certificates/lets-encrypt/privkey.pem
         enabled: true
+logging.level:
+    web: debug
 spring:
     application.name: rythm
 
-    security.oauth2.client.registration:
-        google:
-            client-id: 584372132949-stsv429904cqpdfkhg2842mpnd5h3hmm.apps.googleusercontent.com
-            client-secret: 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
+    security.oauth2.client:
+        provider:
+            osu:
+                authorization-uri: https://osu.ppy.sh/oauth/authorize
+                token-uri: https://osu.ppy.sh/oauth/token
+                user-info-uri: https://osu.ppy.sh/api/v2/me # TODO find correct endpoint
+                user-name-attribute: username
+        registration:
+            osu:
+                authorization-grant-type: authorization_code
+                redirect-uri: https://localhost/login/oauth2/code/osu
+                client-authentication-method: client_secret_basic
+                client-id: 37570
+                client-secret: PeDaJbeTK7fyKJDB53PJh6RyiLjXNCbj6XmnycNJ
+            google:
+                client-id: 584372132949-stsv429904cqpdfkhg2842mpnd5h3hmm.apps.googleusercontent.com
+                client-secret: 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
+
+    # id = 37570
+    # secret = PeDaJbeTK7fyKJDB53PJh6RyiLjXNCbj6XmnycNJ
+    # https://osu.ppy.sh/oauth/authorize
 
     servlet.multipart:
         max-file-size: 100MB
