@@ -79,7 +79,7 @@ try {
 		store,
 		hitsHandler,
 		audioHandler,
-		document.querySelector('canvas')!
+		document.querySelector('#game-rendering-stage')!
 	);
 
 	const timedEventsHandler = new TimedEventsHandler(
