@@ -39,6 +39,5 @@ docker run -it --rm --name certbot -p 80:80 -v "C:/Users/Jez/Desktop/certs:/etc/
 comments and notes on maps
 scores from osu api
 oauth2 osu api
-webGL pour le jeu
 scores du jeu pendant le jeu et à la fin
 scoreboard : pour une map, la liste de tous les meilleurs temps, avec npm prenom photo etc
