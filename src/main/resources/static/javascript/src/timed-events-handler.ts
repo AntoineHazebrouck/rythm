@@ -19,13 +19,16 @@ export class TimedEventsHandler {
 	}
 
 	public transferUnhitNotesAsMisses(): void {
-		this.hitsHandler.pastHits().forEach((hit) => {
-			if (!this.store.isAlreadyHit(hit)) {
-				this.store.addUserHit(
-					new UserHitResult(hit, -1, HitResult.Miss)
-				);
-				this.htmlDisplayHandler.displayRating(HitResult.Miss);
-			}
-		});
+
+		// console.log('this.store', this.store);
+		
+		// this.hitsHandler.pastHits().forEach((hit) => {
+		// 	if (!this.store.isAlreadyHit(hit)) {
+		// 		this.store.addUserHit(
+		// 			new UserHitResult(hit, -1, HitResult.Miss)
+		// 		);
+		// 		this.htmlDisplayHandler.displayRating(HitResult.Miss);
+		// 	}
+		// });
 	}
 }
