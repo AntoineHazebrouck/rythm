@@ -16,6 +16,8 @@ spring:
                 token-uri: https://osu.ppy.sh/oauth/token
                 user-info-uri: https://osu.ppy.sh/api/v2/me # TODO find correct endpoint
                 user-name-attribute: username
+            google:
+                user-name-attribute: email
         registration:
             osu:
                 authorization-grant-type: authorization_code

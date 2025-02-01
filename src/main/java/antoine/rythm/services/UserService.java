@@ -13,7 +13,7 @@ public class UserService {
 	private final UserRepository userRepository;
 
 	public UserEntity asUserEntity(OAuth2User principal) {
-		return userRepository.findById(principal.getAttribute("email")).orElseThrow();
+		return userRepository.findById(principal.getName()).orElseThrow();
 	}
 
 	public UserEntity save(UserEntity user) {
@@ -21,6 +21,6 @@ public class UserService {
 	}
 
 	public boolean exists(OAuth2User principal) {
-		return userRepository.existsById(principal.getAttribute("email"));
+		return userRepository.existsById(principal.getName());
 	}
 }

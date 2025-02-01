@@ -29,7 +29,7 @@ class UserRegistration {
 
 			if (!userService.exists(principal)) {
 				UserEntity user = new UserEntity();
-				user.setEmail(principal.getAttribute("email"));
+				user.setEmail(principal.getName());
 				user.setNotesSpacing(2);
 
 				Map<Integer, Character> keys = new HashMap<>();
