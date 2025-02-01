@@ -1,6 +1,6 @@
+import { HitObject } from 'osu-classes';
 import { HoldableObject } from 'osu-parsers';
 import Two from 'two.js';
-import { Group } from 'two.js/src/group';
 import { RoundedRectangle } from 'two.js/src/shapes/rounded-rectangle';
 import { AudioHandler } from '../audio-handler.js';
 import { HitsHandler } from '../hits-handler.js';
@@ -9,13 +9,16 @@ import { getParameter } from '../inputs/parameters-handler.js';
 import { Store } from '../store.js';
 
 export class CanvasDisplayHandler {
+	private static readonly DEFAULT_RECTANGLE_HEIGHT = 1;
+
 	private readonly store: Store;
 	private readonly hitsHandler: HitsHandler;
 	private readonly audioHandler: AudioHandler;
 	private readonly renderer: Two;
 
 	private readonly userKeyInputsIndicators: Map<string, RoundedRectangle>;
-	private readonly notes: Group;
+	private readonly notes: Map<HitObject, RoundedRectangle>;
+	// private readonly notes: Group;
 
 	public constructor(
 		store: Store,
@@ -33,32 +36,37 @@ export class CanvasDisplayHandler {
 		}).appendTo(canvas);
 
 		const rectangleRadius = 5;
-		const defaultRectangleHeight = 10;
 
-		this.notes = this.renderer.makeGroup(
-			this.hitsHandler.nextHits().map((hit) => {
-				
-				console.log('hit.startTime', hit.startTime, 'this.getDisplayedY(hit.startTime)', this.getDisplayedY(hit.startTime));
-				
-				const rectangleHeight =
-					hit instanceof HoldableObject
-						? this.getDisplayedY(hit.endTime) -
-						  this.getDisplayedY(hit.startTime)
-						: defaultRectangleHeight;
+		this.notes = new Map();
+		//  = this.renderer.makeGroup(
+		this.hitsHandler.nextHits().forEach((hit) => {
+			console.log(
+				'hit.startTime',
+				hit.startTime,
+				'this.getDisplayedY(hit.startTime)',
+				this.getDisplayedY(hit.startTime)
+			);
 
-				return this.renderer.makeRoundedRectangle(
-					this.laneX(
-						this.hitsHandler
-							.columns()
-							.findIndex((x) => x === hit.startX)
-					),
-					this.getDisplayedY(hit.startTime) + (rectangleHeight / 2), // TODO make rectangle in factory
-					this.laneWidth(),
-					5, // TODO
-					rectangleRadius
-				);
-			})
-		);
+			const rectangleHeight =
+				hit instanceof HoldableObject
+					? this.getDisplayedY(hit.endTime) -
+					  this.getDisplayedY(hit.startTime)
+					: CanvasDisplayHandler.DEFAULT_RECTANGLE_HEIGHT;
+
+			const rectangle = this.renderer.makeRoundedRectangle(
+				this.laneX(
+					this.hitsHandler
+						.columns()
+						.findIndex((x) => x === hit.startX)
+				),
+				0, // TODO make rectangle in factory
+				this.laneWidth(),
+				rectangleHeight, // TODO
+				rectangleRadius
+			);
+
+			this.notes.set(hit, rectangle);
+		});
 
 		this.userKeyInputsIndicators = new Map(
 			this.store.getKeyStates().map((status) => {
@@ -66,7 +74,7 @@ export class CanvasDisplayHandler {
 					this.laneX(this.store.getColumnForKey(status.key)),
 					0,
 					this.laneWidth(),
-					defaultRectangleHeight,
+					CanvasDisplayHandler.DEFAULT_RECTANGLE_HEIGHT,
 					rectangleRadius
 				);
 
@@ -110,13 +118,13 @@ export class CanvasDisplayHandler {
 	}
 
 	public draw(): void {
-		// this.notes.position.y = this.getDisplayedY(this.notes.position.y
-		// 	// this.hitsHandler.firstHit().startTime
-		// );
-		this.notes.children.forEach( // TODO make notes a Map <Hit, Rectangle> -> move rectangle according to displayedY of hit
-			shape => shape.position.y = this.getDisplayedY(this.hitsHandler.firstHit().startTime)
-		)
+		Array.from(this.notes.entries()).forEach((entry) => {
+			const [hit, rectangle] = entry;
 
+			rectangle.position.y = this.getDisplayedY(
+				hit.startTime
+			) + rectangle.height / 2;
+		});
 
 		this.drawNoteLimitLine();
 	}

@@ -33,7 +33,7 @@ docker run -it --rm --name certbot -p 80:80 -v "C:/Users/Jez/Desktop/certs:/etc/
 ## DNS
 
 [https://njal.la/domains/antoinehazebrouck.com/](https://njal.la/domains/antoinehazebrouck.com/)
-90.45.4.93
+
 ## TODO
 
 comments and notes on maps
