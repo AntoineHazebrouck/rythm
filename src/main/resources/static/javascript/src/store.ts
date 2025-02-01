@@ -64,7 +64,7 @@ export class Store {
 
 	public addUserHit(userHitResult: UserHitResult) {
 		this.userHits.push(userHitResult);
-		// this.notify(new KeyStatus); TODO
+		// this.notify(new KeyStatus); TODO find score with a dedicated score observer
 	}
 
 	public setKeyState(key: string, state: KeyState): void {

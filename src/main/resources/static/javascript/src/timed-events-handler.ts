@@ -1,7 +1,7 @@
 import { HitResult } from 'osu-classes';
+import { HtmlDisplayHandler } from './display/html-display-handler';
 import { HitsHandler, UserHitResult } from './hits-handler';
 import { Store } from './store';
-import { HtmlDisplayHandler } from './display/html-display-handler';
 
 export class TimedEventsHandler {
 	private readonly htmlDisplayHandler: HtmlDisplayHandler;
@@ -19,16 +19,13 @@ export class TimedEventsHandler {
 	}
 
 	public transferUnhitNotesAsMisses(): void {
-
-		// console.log('this.store', this.store);
-		
-		// this.hitsHandler.pastHits().forEach((hit) => {
-		// 	if (!this.store.isAlreadyHit(hit)) {
-		// 		this.store.addUserHit(
-		// 			new UserHitResult(hit, -1, HitResult.Miss)
-		// 		);
-		// 		this.htmlDisplayHandler.displayRating(HitResult.Miss);
-		// 	}
-		// });
+		this.hitsHandler.pastHits().forEach((hit) => {
+			if (!this.store.isAlreadyHit(hit)) {
+				this.store.addUserHit(
+					new UserHitResult(hit, -1, HitResult.Miss)
+				);
+				this.htmlDisplayHandler.displayRating(HitResult.Miss);
+			}
+		});
 	}
 }

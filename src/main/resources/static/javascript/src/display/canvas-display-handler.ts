@@ -9,7 +9,8 @@ import { getParameter } from '../inputs/parameters-handler.js';
 import { Store } from '../store.js';
 
 export class CanvasDisplayHandler {
-	private static readonly DEFAULT_RECTANGLE_HEIGHT = 1;
+	private static readonly DEFAULT_RECTANGLE_HEIGHT = 5;
+	private static readonly RECTANGLE_RADIUS = 5;
 
 	private readonly store: Store;
 	private readonly hitsHandler: HitsHandler;
@@ -18,7 +19,6 @@ export class CanvasDisplayHandler {
 
 	private readonly userKeyInputsIndicators: Map<string, RoundedRectangle>;
 	private readonly notes: Map<HitObject, RoundedRectangle>;
-	// private readonly notes: Group;
 
 	public constructor(
 		store: Store,
@@ -35,18 +35,8 @@ export class CanvasDisplayHandler {
 			fitted: true,
 		}).appendTo(canvas);
 
-		const rectangleRadius = 5;
-
 		this.notes = new Map();
-		//  = this.renderer.makeGroup(
 		this.hitsHandler.nextHits().forEach((hit) => {
-			console.log(
-				'hit.startTime',
-				hit.startTime,
-				'this.getDisplayedY(hit.startTime)',
-				this.getDisplayedY(hit.startTime)
-			);
-
 			const rectangleHeight =
 				hit instanceof HoldableObject
 					? this.getDisplayedY(hit.endTime) -
@@ -59,11 +49,12 @@ export class CanvasDisplayHandler {
 						.columns()
 						.findIndex((x) => x === hit.startX)
 				),
-				0, // TODO make rectangle in factory
+				0,
 				this.laneWidth(),
-				rectangleHeight, // TODO
-				rectangleRadius
+				rectangleHeight,
+				CanvasDisplayHandler.RECTANGLE_RADIUS
 			);
+			rectangle.fill = 'blue';
 
 			this.notes.set(hit, rectangle);
 		});
@@ -72,10 +63,10 @@ export class CanvasDisplayHandler {
 			this.store.getKeyStates().map((status) => {
 				const rectangle = this.renderer.makeRoundedRectangle(
 					this.laneX(this.store.getColumnForKey(status.key)),
-					0,
+					0 + CanvasDisplayHandler.DEFAULT_RECTANGLE_HEIGHT,
 					this.laneWidth(),
 					CanvasDisplayHandler.DEFAULT_RECTANGLE_HEIGHT,
-					rectangleRadius
+					CanvasDisplayHandler.RECTANGLE_RADIUS
 				);
 
 				rectangle.fill = 'red';
@@ -108,22 +99,25 @@ export class CanvasDisplayHandler {
 		});
 	}
 
-	private getDisplayedY(actualY: number): number {
+	private getDisplayedY(time: number): number {
 		const spacingRatio = Number(
 			getParameter('notes-spacing').orElseThrow(
 				new Error('Could not read notes-spacing property')
 			)
 		);
-		return (actualY - this.audioHandler.time()) / spacingRatio;
+		return (time - this.audioHandler.time()) / spacingRatio;
 	}
 
-	public draw(): void {
+	private draw(): void {
 		Array.from(this.notes.entries()).forEach((entry) => {
 			const [hit, rectangle] = entry;
 
-			rectangle.position.y = this.getDisplayedY(
-				hit.startTime
-			) + rectangle.height / 2;
+			if (rectangle.position.y + rectangle.height < 0) {
+				this.notes.delete(hit);
+			}
+
+			rectangle.position.y =
+				this.getDisplayedY(hit.startTime) + rectangle.height / 2;
 		});
 
 		this.drawNoteLimitLine();
