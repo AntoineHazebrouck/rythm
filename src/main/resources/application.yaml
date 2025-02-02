@@ -14,7 +14,7 @@ spring:
             osu:
                 authorization-uri: https://osu.ppy.sh/oauth/authorize
                 token-uri: https://osu.ppy.sh/oauth/token
-                user-info-uri: https://osu.ppy.sh/api/v2/me # TODO find correct endpoint
+                user-info-uri: https://osu.ppy.sh/api/v2/me
                 user-name-attribute: username
             google:
                 user-name-attribute: email
@@ -28,10 +28,6 @@ spring:
             google:
                 client-id: 584372132949-stsv429904cqpdfkhg2842mpnd5h3hmm.apps.googleusercontent.com
                 client-secret: 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
-
-    # id = 37570
-    # secret = PeDaJbeTK7fyKJDB53PJh6RyiLjXNCbj6XmnycNJ
-    # https://osu.ppy.sh/oauth/authorize
 
     servlet.multipart:
         max-file-size: 100MB
