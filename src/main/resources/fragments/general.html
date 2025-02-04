@@ -22,7 +22,8 @@
 				</ul>
 			</div>
 			<div class="col-2">
-				<img th:src="${principal.getAttribute('picture')}" class="img-thumbnail" alt="profile-picture">
+				<img th:src="${principal.getPictureUrl()}" class="img-thumbnail" alt="profile-picture" style="width: 125px;">
+				<figcaption class="figure-caption" th:text="${principal.getLogin()}"></figcaption>
 			</div>
 		</div>
 

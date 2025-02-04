@@ -24,7 +24,5 @@ public class UserEntity {
 	@ManyToMany(cascade = CascadeType.ALL)
 	private Set<OsuArchiveEntity> likedSongs;
 
-	private AuthenticationProvider authenticationProvider;
-
 	private String pictureUrl;
 }

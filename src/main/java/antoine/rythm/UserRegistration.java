@@ -39,38 +39,40 @@ class UserRegistration {
 				default -> throw new IllegalArgumentException("%s is an unknown provider".formatted(provider));
 			};
 
+			UserEntity user = new UserEntity();
+			user.setLogin(principal.getName());
+			String pictureUrl = switch (checkedProvider) {
+				case GOOGLE -> principal.getAttribute("picture");
+				case OSU -> principal.getAttribute("avatar_url");
+			};
+			user.setPictureUrl(pictureUrl);
+
 			if (!userService.exists(principal)) {
-				UserEntity user = new UserEntity();
-				user.setLogin(principal.getName());
 				user.setNotesSpacing(2);
-				user.setAuthenticationProvider(checkedProvider);
 
-				String pictureUrl = switch (checkedProvider) {
-					case GOOGLE -> principal.getAttribute("picture");
-					case OSU -> principal.getAttribute("avatar_url");
-				};
-				user.setPictureUrl(pictureUrl);
-
-				Map<Integer, Character> keys = new HashMap<>();
-				keys.put(1, 'a');
-				keys.put(2, 'z');
-				keys.put(3, 'e');
-				keys.put(4, 'r');
-				keys.put(5, 't');
-				keys.put(6, 'y');
-				keys.put(7, 'u');
-				keys.put(8, 'i');
-				keys.put(9, 'o');
-				keys.put(10, 'p');
-				keys.put(11, 'q');
-				keys.put(12, 's');
-				keys.put(13, 'd');
-				keys.put(14, 'f');
-				keys.put(15, 'g');
-				user.setKeys(keys);
-
-				userService.save(user);
+				defaultKeys(user);
 			}
+			userService.save(user);
 		};
+	}
+
+	private static void defaultKeys(UserEntity user) {
+		Map<Integer, Character> keys = new HashMap<>();
+		keys.put(1, 'a');
+		keys.put(2, 'z');
+		keys.put(3, 'e');
+		keys.put(4, 'r');
+		keys.put(5, 't');
+		keys.put(6, 'y');
+		keys.put(7, 'u');
+		keys.put(8, 'i');
+		keys.put(9, 'o');
+		keys.put(10, 'p');
+		keys.put(11, 'q');
+		keys.put(12, 's');
+		keys.put(13, 'd');
+		keys.put(14, 'f');
+		keys.put(15, 'g');
+		user.setKeys(keys);
 	}
 }
