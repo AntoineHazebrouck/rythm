@@ -25,7 +25,7 @@ public class UserSettingsDto {
 	}
 
 	public UserEntity toEntity(UserEntity entity) {
-		entity.setEmail(entity.getEmail());
+		entity.setLogin(entity.getLogin());
 		entity.setLikedSongs(entity.getLikedSongs());
 
 		entity.setNotesSpacing(this.getNotesSpacing());

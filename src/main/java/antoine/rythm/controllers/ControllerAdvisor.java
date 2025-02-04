@@ -7,12 +7,18 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RestController;
 
+import antoine.rythm.entities.UserEntity;
+import antoine.rythm.services.UserService;
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 @ControllerAdvice(annotations = { Controller.class, RestController.class })
 class ControllerAdvisor {
+	private final UserService userService;
 
 	@ModelAttribute("principal")
-	public OAuth2User getCurrentUser(@AuthenticationPrincipal OAuth2User principal) {
+	public UserEntity getCurrentUser(@AuthenticationPrincipal OAuth2User principal) {
 
-		return principal;
+		return userService.asUserEntity(principal);
 	}
 }

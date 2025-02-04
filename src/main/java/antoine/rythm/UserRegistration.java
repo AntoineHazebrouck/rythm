@@ -7,8 +7,10 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.event.AuthenticationSuccessEvent;
+import org.springframework.security.oauth2.client.authentication.OAuth2LoginAuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
+import antoine.rythm.entities.AuthenticationProvider;
 import antoine.rythm.entities.UserEntity;
 import antoine.rythm.services.UserService;
 import lombok.RequiredArgsConstructor;
@@ -27,10 +29,27 @@ class UserRegistration {
 
 			var principal = (OAuth2User) event.getAuthentication().getPrincipal();
 
+			String provider = ((OAuth2LoginAuthenticationToken) event.getSource())
+					.getClientRegistration()
+					.getRegistrationId();
+
+			var checkedProvider = switch (provider) {
+				case "google" -> AuthenticationProvider.GOOGLE;
+				case "osu" -> AuthenticationProvider.OSU;
+				default -> throw new IllegalArgumentException("%s is an unknown provider".formatted(provider));
+			};
+
 			if (!userService.exists(principal)) {
 				UserEntity user = new UserEntity();
-				user.setEmail(principal.getName());
+				user.setLogin(principal.getName());
 				user.setNotesSpacing(2);
+				user.setAuthenticationProvider(checkedProvider);
+
+				String pictureUrl = switch (checkedProvider) {
+					case GOOGLE -> principal.getAttribute("picture");
+					case OSU -> principal.getAttribute("avatar_url");
+				};
+				user.setPictureUrl(pictureUrl);
 
 				Map<Integer, Character> keys = new HashMap<>();
 				keys.put(1, 'a');
