@@ -67,4 +67,19 @@
 			<scope>runtime</scope>
 		</dependency>
 	</dependencies>
+
+	<build>
+		<resources>
+			<resource>
+				<directory>../game-ui/target/javascript</directory>
+				<includes>
+					<include>classes.js</include>
+				</includes>
+				<targetPath>static/javascript/game-ui</targetPath>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+		</resources>
+	</build>
 </project>

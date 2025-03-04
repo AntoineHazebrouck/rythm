@@ -34,6 +34,7 @@
 
 	<build>
 		<plugins>
+			<!-- javascript compiler -->
 			<plugin>
 				<groupId>org.teavm</groupId>
 				<artifactId>teavm-maven-plugin</artifactId>
@@ -54,10 +55,11 @@
 						</goals>
 						<phase>process-classes</phase>
 						<configuration>
-							<mainClass>antoine.Main</mainClass>
+							<mainClass>antoine.rythm.Main</mainClass>
 							<mainPageIncluded>true</mainPageIncluded>
 							<debugInformationGenerated>true</debugInformationGenerated>
 							<sourceMapsGenerated>true</sourceMapsGenerated>
+							<minifying>false</minifying>
 						</configuration>
 					</execution>
 				</executions>
