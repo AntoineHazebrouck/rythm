@@ -1,5 +1,2 @@
-CD src/main/resources/static/javascript
-CALL npm install
-CALL npm run build
-CD ../../../../..
-CALL ./mvnw clean spring-boot:run
+CALL ./mvnw --file ./game-ui/pom.xml clean install
+CALL ./mvnw --file ./web-server/pom.xml clean spring-boot:run

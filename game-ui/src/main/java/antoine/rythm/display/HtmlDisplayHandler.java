@@ -2,6 +2,9 @@ package antoine.rythm.display;
 
 import org.teavm.jso.dom.html.HTMLElement;
 
+import static j2html.TagCreator.*; // Use static star import
+
+
 public class HtmlDisplayHandler {
 	private final HTMLElement noteRating;
 	private final HTMLElement error;

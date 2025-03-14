@@ -21,6 +21,18 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<optional>true</optional>
+		</dependency>
+
+		<dependency>
+			<groupId>com.j2html</groupId>
+			<artifactId>j2html</artifactId>
+			<version>1.6.0</version>
+		</dependency>
+
+		<dependency>
 			<groupId>org.teavm</groupId>
 			<artifactId>teavm-jso</artifactId>
 			<version>0.11.0</version>
